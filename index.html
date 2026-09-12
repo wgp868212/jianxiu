@@ -775,104 +775,6 @@ body { background: var(--paper-base); }
 }
 
 /* ============================================
-   开场动画 · 水墨意境
-   ============================================ */
-.intro-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: radial-gradient(ellipse at center, #2b2520 0%, #1a1613 50%, #0d0b09 100%);
-  z-index: 9999; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  overflow: hidden; transition: opacity 1.2s ease, visibility 1.2s ease;
-}
-.intro-overlay.fade-out { opacity: 0; visibility: hidden; }
-
-.intro-ink-burst {
-  position: absolute; width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(245,239,230,0.15) 0%, rgba(245,239,230,0.05) 30%, transparent 70%);
-  border-radius: 50%; filter: blur(40px);
-  animation: inkBurst 2.5s ease-out forwards; opacity: 0;
-}
-@keyframes inkBurst {
-  0% { transform: scale(0.2); opacity: 0; }
-  30% { opacity: 1; }
-  100% { transform: scale(2.5); opacity: 0; }
-}
-
-.intro-ink-splash {
-  position: absolute; width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(201,169,110,0.2) 0%, transparent 70%);
-  border-radius: 50%; filter: blur(30px);
-  animation: inkSplash 3s ease-out forwards;
-  animation-delay: 0.3s; opacity: 0;
-}
-@keyframes inkSplash {
-  0% { transform: scale(0) rotate(0deg); opacity: 0; }
-  40% { opacity: 0.8; }
-  100% { transform: scale(2) rotate(180deg); opacity: 0; }
-}
-
-.intro-title-wrap {
-  position: relative; z-index: 2; text-align: center;
-  animation: titleFadeIn 1.5s ease-out forwards;
-  animation-delay: 0.8s; opacity: 0;
-}
-@keyframes titleFadeIn {
-  0% { opacity: 0; transform: translateY(30px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-.intro-title {
-  font-family: var(--font-display); font-size: 96px;
-  color: var(--paper-light); letter-spacing: 24px;
-  text-shadow: 0 0 40px rgba(201,169,110,0.5), 0 0 80px rgba(201,169,110,0.3);
-  margin-bottom: 24px; padding-left: 24px; position: relative;
-}
-.intro-title::before, .intro-title::after {
-  content: ''; position: absolute; top: 50%; width: 60px; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-.intro-title::before { left: -80px; }
-.intro-title::after { right: -80px; }
-
-.intro-subtitle {
-  font-family: var(--font-serif); font-size: 20px;
-  color: var(--gold-light); letter-spacing: 8px;
-  opacity: 0.8; padding-left: 8px;
-}
-
-@keyframes sealStamp {
-  0% { opacity: 0; transform: translateX(-50%) scale(3) rotate(-15deg); }
-  60% { opacity: 1; transform: translateX(-50%) scale(0.9) rotate(3deg); }
-  100% { opacity: 1; transform: translateX(-50%) scale(1) rotate(-3deg); }
-}
-.intro-particles {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none;
-}
-.intro-particle {
-  position: absolute; width: 3px; height: 3px; background: var(--gold);
-  border-radius: 50%; opacity: 0;
-  animation: none; /* 粒子动画已禁用 */
-}
-@keyframes particleFloat {
-  0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
-  50% { opacity: 0.8; transform: translateY(-30px) scale(1); }
-}
-
-.intro-skip {
-  position: absolute; top: 24px; right: 24px;
-  font-family: var(--font-sans); font-size: 14px;
-  color: var(--ink-faint); background: rgba(245,239,230,0.1);
-  border: 1px solid rgba(245,239,230,0.2); border-radius: 20px;
-  padding: 8px 20px; cursor: pointer; z-index: 3;
-  transition: all 0.3s ease; backdrop-filter: blur(4px);
-}
-.intro-skip:hover {
-  color: var(--paper-light); background: rgba(245,239,230,0.2);
-  border-color: rgba(245,239,230,0.4);
-}
-
-/* ============================================
    下载选择弹窗
    ============================================ */
 .download-modal-overlay {
@@ -1655,13 +1557,201 @@ body { background: var(--paper-base); }
   .glass-card { padding: 20px; }
   .profile-name { font-size: 24px; }
 }
+
+/* ===== 开场动画 ===== */
+.intro-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: linear-gradient(135deg, #f7f8fc 0%, #e8ecf8 50%, #f0e8f8 100%);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.7s ease, visibility 0.7s;
+}
+.intro-overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+.intro-content { display: flex; align-items: center; gap: 28px; }
+.intro-avatar {
+  width: 110px; height: 110px; border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.95);
+  box-shadow: 0 10px 40px rgba(90,176,255,0.25), 0 0 0 8px rgba(255,107,157,0.1);
+  transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: avatarPop 0.6s ease;
+}
+@keyframes avatarPop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.intro-avatar.move-left { transform: translateX(-70px) scale(0.9); }
+.intro-text {
+  opacity: 0; transform: translateX(-30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  display: flex; align-items: center;
+}
+.intro-text.show { opacity: 1; transform: translateX(0); }
+.intro-name {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 48px; font-weight: 800; color: #3a3f5c;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, #3a3f5c, #ff6b9d);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.intro-cursor {
+  display: inline-block; width: 4px; height: 44px;
+  background: #ff6b9d; margin-left: 6px; border-radius: 2px;
+  animation: cursorBlink 0.7s infinite;
+}
+@keyframes cursorBlink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+/* ===== 站点统计 ===== */
+.site-stats {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-top: 40px; padding: 28px 36px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(90,176,255,0.12);
+  flex-wrap: wrap;
+}
+.stat-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 20px;
+}
+.stat-icon { font-size: 20px; }
+.stat-label { font-size: 13px; color: #8f94ab; }
+.stat-num {
+  font-size: 20px; font-weight: 700; color: #3a3f5c;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+.stat-divider {
+  width: 1px; height: 28px; background: rgba(0,0,0,0.08);
+}
+
+/* ===== 背景时间 ===== */
+.bg-time {
+  position: fixed; bottom: 80px; right: 40px;
+  z-index: 1; text-align: right;
+  pointer-events: none; opacity: 0.15;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+.bg-time-main {
+  font-size: 72px; font-weight: 800; color: #3a3f5c;
+  letter-spacing: 4px; line-height: 1;
+}
+.bg-time-date {
+  font-size: 16px; color: #6b7089; margin-top: 8px;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 768px) {
+  .intro-name { font-size: 32px; }
+  .intro-avatar { width: 80px; height: 80px; }
+  .intro-content { gap: 16px; }
+  .site-stats { padding: 16px; gap: 8px; }
+  .stat-item { padding: 0 10px; flex-direction: column; gap: 2px; }
+  .stat-divider { display: none; }
+  .bg-time { bottom: 100px; right: 16px; }
+  .bg-time-main { font-size: 42px; }
+  .bg-time-date { font-size: 12px; }
+}
+
+
+/* ===== 登录按钮 ===== */
+.nav-auth { margin-left: 12px; }
+.nav-login-btn {
+  background: linear-gradient(135deg, #ff6b9d, #ff8fb8);
+  color: white; border: none; border-radius: 20px;
+  padding: 7px 20px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.3s ease;
+  font-family: 'Noto Sans SC', sans-serif;
+  box-shadow: 0 2px 10px rgba(255,107,157,0.3);
+}
+.nav-login-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,107,157,0.4); }
+.nav-user-info {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.6); padding: 5px 14px; border-radius: 20px;
+  cursor: pointer; transition: all 0.3s;
+}
+.nav-user-info:hover { background: rgba(255,255,255,0.85); }
+.nav-user-avatar {
+  width: 28px; height: 28px; border-radius: 50%; background: #5ab0ff;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 14px; font-weight: 700;
+}
+.nav-user-email { font-size: 13px; color: #3a3f5c; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-logout { font-size: 12px; color: #8f94ab; margin-left: 4px; }
+
+/* ===== 登录弹窗 ===== */
+.login-modal-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,0.4); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+}
+.login-modal-overlay.show { display: flex; }
+.login-modal {
+  position: relative; width: 380px; max-width: 90vw;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+  border-radius: 20px; padding: 40px 32px 32px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: loginPop 0.3s ease;
+}
+@keyframes loginPop { from { opacity:0; transform: scale(0.9) translateY(20px); } to { opacity:1; transform: scale(1) translateY(0); } }
+.login-modal-close {
+  position: absolute; top: 14px; right: 16px;
+  background: none; border: none; font-size: 24px; color: #8f94ab;
+  cursor: pointer; line-height: 1;
+}
+.login-icon { font-size: 48px; text-align: center; margin-bottom: 12px; }
+.login-title { text-align: center; font-size: 24px; color: #3a3f5c; margin-bottom: 6px; font-weight: 700; }
+.login-subtitle { text-align: center; font-size: 13px; color: #8f94ab; margin-bottom: 24px; }
+.login-field { margin-bottom: 16px; }
+.login-field label { display: block; font-size: 13px; color: #6b7089; margin-bottom: 6px; font-weight: 500; }
+.login-field input {
+  width: 100%; padding: 11px 14px; border: 1.5px solid #dfe3f0;
+  border-radius: 10px; font-size: 14px; outline: none;
+  transition: border-color 0.3s; background: white;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+.login-field input:focus { border-color: #ff6b9d; box-shadow: 0 0 0 3px rgba(255,107,157,0.1); }
+.login-error { color: #e0527f; font-size: 13px; text-align: center; min-height: 20px; margin-bottom: 8px; }
+.login-submit {
+  width: 100%; padding: 12px; background: linear-gradient(135deg, #ff6b9d, #ff8fb8);
+  color: white; border: none; border-radius: 10px; font-size: 15px;
+  font-weight: 600; cursor: pointer; transition: all 0.3s;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+.login-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,107,157,0.4); }
+.login-switch { text-align: center; font-size: 13px; color: #8f94ab; margin-top: 16px; }
+.login-switch a { color: #5ab0ff; text-decoration: none; }
+.login-tip { text-align: center; font-size: 11px; color: #b8bccd; margin-top: 12px; }
+
+@media (max-width: 768px) {
+  .nav-auth { display: none; }
+}
+
 </style>
 </head>
 <body>
 
+<!-- 开场动画 -->
+<div class="intro-overlay" id="introOverlay">
+  <div class="intro-content">
+    <img src="images/avatar.jpg" alt="剑修哥" class="intro-avatar" id="introAvatar">
+    <div class="intro-text" id="introText">
+      <span class="intro-name">JianXiu_</span><span class="intro-cursor"></span>
+    </div>
+  </div>
+</div>
+
 <!-- 壁纸背景层 -->
 <div class="wallpaper-bg" id="wallpaperBg"></div>
 <div class="wallpaper-overlay"></div>
+<!-- 背景时间 -->
+<div class="bg-time" id="bgTime">
+  <div class="bg-time-main" id="bgTimeMain">--:--</div>
+  <div class="bg-time-date" id="bgTimeDate">----年--月--日</div>
+</div>
+
+
 
 <!-- 下载选择弹窗 -->
 <div class="download-modal-overlay" id="downloadModal">
@@ -1723,6 +1813,9 @@ body { background: var(--paper-base); }
   <div class="nav-time" id="navTime">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     <span id="navTimeText">--:--:--</span>
+  </div>
+  <div class="nav-auth" id="navAuth">
+    <button class="nav-login-btn" onclick="showLoginModal()">登录</button>
   </div>
   <button class="nav-toggle" onclick="toggleNavMenu()" aria-label="菜单">
     <span></span><span></span><span></span>
@@ -2052,6 +2145,32 @@ body { background: var(--paper-base); }
   </div>
 
 
+  <!-- 站点统计 -->
+  <div class="site-stats">
+    <div class="stat-item">
+      <span class="stat-icon">👥</span>
+      <span class="stat-label">本站访客</span>
+      <span class="stat-num" id="siteUV">--</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-icon">👁️</span>
+      <span class="stat-label">总浏览量</span>
+      <span class="stat-num" id="sitePV">--</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-icon">📝</span>
+      <span class="stat-label">文章数目</span>
+      <span class="stat-num" id="articleCount">--</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-icon">🕐</span>
+      <span class="stat-label">最后更新</span>
+      <span class="stat-num" id="lastUpdate">--</span>
+    </div>
+  </div>
 
 </main>
 
@@ -2059,6 +2178,32 @@ body { background: var(--paper-base); }
   <span>群號已複製</span>
 </div>
 
+
+<!-- 登录弹窗 -->
+<div class="login-modal-overlay" id="loginModal" onclick="closeLoginModal(event)">
+  <div class="login-modal">
+    <button class="login-modal-close" onclick="closeLoginModal()">&times;</button>
+    <div class="login-icon">👤</div>
+    <h3 class="login-title" id="loginTitle">登录</h3>
+    <p class="login-subtitle">登录后可同步壁纸偏好与浏览记录</p>
+    <form class="login-form" onsubmit="handleLogin(event)">
+      <div class="login-field">
+        <label>邮箱</label>
+        <input type="email" id="loginEmail" placeholder="请输入邮箱" required>
+      </div>
+      <div class="login-field">
+        <label>密码</label>
+        <input type="password" id="loginPassword" placeholder="请输入密码" required>
+      </div>
+      <div class="login-error" id="loginError"></div>
+      <button type="submit" class="login-submit">登录</button>
+    </form>
+    <div class="login-switch">
+      还没有账号？<a href="javascript:;" onclick="switchLoginMode('register')">立即注册</a>
+    </div>
+    <div class="login-tip">默认管理员：admin@jianxiu.icu / admin123</div>
+  </div>
+</div>
 <div id="rewardModal" class="reward-modal-overlay" onclick="closeRewardModal(event)">
   <div class="reward-modal">
     <button class="reward-modal-close" onclick="closeRewardModal()">&times;</button>
@@ -2072,54 +2217,164 @@ body { background: var(--paper-base); }
 </div>
 
 <script>
+
+// ===== 登录功能（前端模拟） =====
+let loginMode = 'login';
+function showLoginModal() {
+  document.getElementById('loginModal').classList.add('show');
+  document.getElementById('loginError').textContent = '';
+}
+function closeLoginModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('loginModal').classList.remove('show');
+}
+function switchLoginMode(mode) {
+  loginMode = mode;
+  document.getElementById('loginTitle').textContent = mode === 'login' ? '登录' : '注册';
+  document.querySelector('.login-submit').textContent = mode === 'login' ? '登录' : '注册';
+  document.querySelector('.login-switch').innerHTML = mode === 'login'
+    ? '还没有账号？<a href="javascript:;" onclick="switchLoginMode(\'register\')">立即注册</a>'
+    : '已有账号？<a href="javascript:;" onclick="switchLoginMode(\'login\')">去登录</a>';
+  document.getElementById('loginError').textContent = '';
+}
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.color = '#e0527f';
+  if (!email || !password) { errEl.textContent = '请填写邮箱和密码'; return; }
+  try {
+    let users = JSON.parse(localStorage.getItem('jx_users') || '{}');
+    if (!users['admin@jianxiu.icu']) {
+      users['admin@jianxiu.icu'] = { password: 'admin123', role: 'admin' };
+      localStorage.setItem('jx_users', JSON.stringify(users));
+    }
+    if (loginMode === 'register') {
+      if (users[email]) { errEl.textContent = '该邮箱已注册'; return; }
+      users[email] = { password: password, role: 'user', regTime: Date.now() };
+      localStorage.setItem('jx_users', JSON.stringify(users));
+      errEl.style.color = '#4ade80';
+      errEl.textContent = '注册成功，请登录';
+      setTimeout(function() { switchLoginMode('login'); }, 800);
+      return;
+    }
+    const user = users[email];
+    if (!user || user.password !== password) { errEl.textContent = '邮箱或密码错误'; return; }
+    localStorage.setItem('jx_current_user', JSON.stringify({ email: email, role: user.role, loginTime: Date.now() }));
+    closeLoginModal();
+    updateNavAuth();
+    showLoginToast('登录成功，欢迎 ' + email);
+  } catch(err) { errEl.textContent = '登录失败，请重试'; }
+}
+function logout() {
+  localStorage.removeItem('jx_current_user');
+  updateNavAuth();
+  showLoginToast('已退出登录');
+}
+function updateNavAuth() {
+  const navAuth = document.getElementById('navAuth');
+  if (!navAuth) return;
+  let user = null;
+  try { user = JSON.parse(localStorage.getItem('jx_current_user')); } catch(e) {}
+  if (user) {
+    const initial = user.email.charAt(0).toUpperCase();
+    navAuth.innerHTML = '<div class="nav-user-info" onclick="logout()" title="点击退出登录">'
+      + '<div class="nav-user-avatar">' + initial + '</div>'
+      + '<span class="nav-user-email">' + user.email + '</span>'
+      + '<span class="nav-logout">退出</span></div>';
+  } else {
+    navAuth.innerHTML = '<button class="nav-login-btn" onclick="showLoginModal()">登录</button>';
+  }
+}
+function showLoginToast(msg) {
+  let t = document.getElementById('loginToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'loginToast';
+    t.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:rgba(58,63,92,0.9);color:white;padding:10px 24px;border-radius:20px;font-size:14px;z-index:10001;transition:opacity 0.3s;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  setTimeout(function() { t.style.opacity = '0'; }, 2000);
+}
+document.addEventListener('DOMContentLoaded', updateNavAuth);
+
+
+// ===== 开场动画 =====
+(function() {
+  const overlay = document.getElementById('introOverlay');
+  if (!overlay) return;
+  const avatar = document.getElementById('introAvatar');
+  const text = document.getElementById('introText');
+  // 页面加载后启动
+  function startIntro() {
+    setTimeout(function() { if (avatar) avatar.classList.add('move-left'); }, 700);
+    setTimeout(function() { if (text) text.classList.add('show'); }, 1100);
+    setTimeout(function() { overlay.classList.add('hide'); }, 2800);
+    setTimeout(function() { overlay.style.display = 'none'; }, 3600);
+  }
+  if (document.readyState === 'complete') startIntro();
+  else window.addEventListener('load', startIntro);
+})();
+
+// ===== 背景时间 =====
+(function() {
+  const main = document.getElementById('bgTimeMain');
+  const date = document.getElementById('bgTimeDate');
+  if (!main) return;
+  function update() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    main.textContent = h + ':' + m;
+    if (date) {
+      const y = now.getFullYear();
+      const mo = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      const week = ['日','一','二','三','四','五','六'][now.getDay()];
+      date.textContent = y + '年' + mo + '月' + d + '日 星期' + week;
+    }
+  }
+  update();
+  setInterval(update, 1000);
+})();
+
+// ===== 浏览人数（不蒜子 + localStorage备用） =====
+(function() {
+  // localStorage 本地计数（不蒜子加载失败时备用）
+  try {
+    let pv = parseInt(localStorage.getItem('jx_pv') || '0', 10);
+    pv += 1;
+    localStorage.setItem('jx_pv', String(pv));
+    const pvEl = document.getElementById('sitePV');
+    if (pvEl) pvEl.textContent = pv;
+    // UV：同一天只算一次
+    const today = new Date().toDateString();
+    const lastVisit = localStorage.getItem('jx_uv_date');
+    let uv = parseInt(localStorage.getItem('jx_uv') || '0', 10);
+    if (lastVisit !== today) {
+      uv += 1;
+      localStorage.setItem('jx_uv', String(uv));
+      localStorage.setItem('jx_uv_date', today);
+    }
+    const uvEl = document.getElementById('siteUV');
+    if (uvEl) uvEl.textContent = uv;
+  } catch(e) {}
+  // 不蒜子加载后更新为真实数据
+  setTimeout(function() {
+    const bzUV = document.getElementById('busuanzi_value_site_uv');
+    const bzPV = document.getElementById('busuanzi_value_site_pv');
+    const siteUV = document.getElementById('siteUV');
+    const sitePV = document.getElementById('sitePV');
+    if (bzUV && bzUV.textContent && siteUV) siteUV.textContent = bzUV.textContent;
+    if (bzPV && bzPV.textContent && sitePV) sitePV.textContent = bzPV.textContent;
+  }, 3000);
+})();
+
 (function () {
   'use strict';
-
-  // ========== 开场动画控制 ==========
-  let introSkipped = false;
-
-  function createIntroParticles() {
-    const container = document.getElementById('introParticles');
-    if (!container) return;
-    for (let i = 0; i < 8; i++) {
-      const p = document.createElement('div');
-      p.className = 'intro-particle';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.top = Math.random() * 100 + '%';
-      p.style.animationDelay = Math.random() * 2 + 's';
-      p.style.animationDuration = (2 + Math.random() * 2) + 's';
-      p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
-      container.appendChild(p);
-    }
-  }
-
-  function hideIntro() {
-    if (introSkipped) return;
-    introSkipped = true;
-    const overlay = document.getElementById('introOverlay');
-    if (overlay) {
-      overlay.classList.add('fade-out');
-      setTimeout(() => { overlay.style.display = 'none'; }, 1200);
-    }
-  }
-
-  function skipIntro() {
-    hideIntro();
-  }
-  window.skipIntro = skipIntro;
-
-  // 页面加载完成后启动开场动画（已禁用）
-  window.addEventListener('load', function () {
-    // 开场动画已禁用，直接跳过
-    const overlay = document.getElementById('introOverlay');
-    if (overlay) overlay.style.display = 'none';
-  });
-
-  // 如果页面已经加载完成（缓存情况），立即启动（已禁用）
-  if (document.readyState === 'complete') {
-    const overlay = document.getElementById('introOverlay');
-    if (overlay) overlay.style.display = 'none';
-  }
 
   // ========== 下载选择弹窗控制 ==========
   function showDownloadModal() {
@@ -2307,9 +2562,12 @@ body { background: var(--paper-base); }
   function initWallpaper() {
     const bg = document.getElementById('wallpaperBg');
     if (!bg) return;
-    // 读取保存的选择
-    let saved = 1;
-    try { saved = parseInt(localStorage.getItem('jx_wallpaper')) || 1; } catch(e) {}
+    // 读取保存的选择，没有则随机
+    let saved;
+    try { saved = parseInt(localStorage.getItem('jx_wallpaper')); } catch(e) {}
+    if (!saved || isNaN(saved)) {
+      saved = Math.floor(Math.random() * WALLPAPERS.length) + 1;
+    }
     currentWallpaper = saved;
     bg.style.backgroundImage = `url('${getWallpaperUrl(saved)}')`;
     bg.style.opacity = '1';

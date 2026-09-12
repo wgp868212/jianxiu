@@ -9,22 +9,22 @@
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
 <style>
 /* ============================================
-   劍修哥 · 修行日誌
+   剑修哥 · 修行日誌
    風格：仙俠 / 武俠 · 水墨意境
    ============================================ */
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --ink-deep: #1a1613; --ink-dark: #2b2520; --ink-mid: #4a423d;
-  --ink-light: #7a7169; --ink-faint: #a89e94;
-  --paper-light: #f5efe6; --paper-base: #ebe0cf;
-  --paper-warm: #e0d3bd; --paper-deep: #cdbc9f;
-  --cinnabar: #b8342e; --cinnabar-light: #d4503d; --cinnabar-deep: #8c2620;
-  --jade: #3d7a6e; --jade-light: #5a9e90; --jade-deep: #2c5a50;
-  --gold: #c9a96e; --gold-light: #e0c98a; --gold-deep: #a68a4e;
-  --font-display: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
-  --font-serif: 'Noto Serif SC', serif;
+  --ink-deep: #3a3f5c; --ink-dark: #4a4f6b; --ink-mid: #6b7089;
+  --ink-light: #8f94ab; --ink-faint: #b8bccd;
+  --paper-light: #ffffff; --paper-base: #f7f8fc;
+  --paper-warm: #eef0f8; --paper-deep: #dfe3f0;
+  --cinnabar: #ff6b9d; --cinnabar-light: #ff8fb8; --cinnabar-deep: #e0527f;
+  --jade: #5ab0ff; --jade-light: #8cc8ff; --jade-deep: #3a8fdb;
+  --gold: #ffb84d; --gold-light: #ffd78a; --gold-deep: #e69c30;
+  --font-display: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  --font-serif: 'Noto Sans SC', 'PingFang SC', sans-serif;
   --font-sans: 'Noto Sans SC', sans-serif;
 }
 
@@ -32,7 +32,7 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-serif); color: var(--ink-dark);
-  background: var(--paper-light); min-height: 100vh;
+  background: var(--paper-base); min-height: 100vh;
   overflow-x: hidden; position: relative; line-height: 1.7;
 }
 
@@ -49,42 +49,11 @@ body {
   opacity: 0.8;
 }
 
-.ink-wash {
-  position: absolute; border-radius: 50%; filter: blur(60px);
-  opacity: 0.08; animation: inkDrift 20s ease-in-out infinite;
-}
-.ink-wash-1 { width: 500px; height: 500px; background: radial-gradient(circle, var(--ink-deep) 0%, transparent 70%); top: -100px; left: -100px; animation-delay: 0s; }
-.ink-wash-2 { width: 400px; height: 400px; background: radial-gradient(circle, var(--jade) 0%, transparent 70%); bottom: 10%; right: -50px; animation-delay: -7s; }
-.ink-wash-3 { width: 350px; height: 350px; background: radial-gradient(circle, var(--cinnabar) 0%, transparent 70%); top: 50%; left: 30%; opacity: 0.05; animation-delay: -14s; }
 
-@keyframes inkDrift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -20px) scale(1.05); }
   66% { transform: translate(-20px, 20px) scale(0.95); }
 }
 
-.mountain-bg {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 300px;
-  background: linear-gradient(180deg, transparent 0%, rgba(44, 90, 80, 0.03) 100%);
-  opacity: 0.6;
-}
-.mountain-bg::before {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 200px;
-  background-repeat: no-repeat; background-position: bottom; background-size: cover;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200' preserveAspectRatio='none'%3E%3Cpath d='M0,200 L0,140 L80,120 L160,150 L240,100 L320,130 L420,80 L520,110 L620,70 L720,120 L820,90 L920,130 L1020,100 L1120,140 L1200,110 L1200,200 Z' fill='%232c5a50' opacity='0.06'/%3E%3C/svg%3E");
-}
 
-.mist-layer {
-  position: absolute; width: 200%; height: 100px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 20%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 80%, transparent 100%);
-  filter: blur(20px); animation: mistFlow 30s linear infinite; opacity: 0.4;
-}
-.mist-1 { top: 20%; animation-duration: 40s; }
-.mist-2 { top: 60%; animation-duration: 55s; animation-direction: reverse; opacity: 0.25; }
-
-@keyframes mistFlow {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0%); }
 }
 
 /* 导航栏 */
@@ -92,8 +61,11 @@ body {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: center;
   padding: 14px 24px;
-  background: linear-gradient(180deg, rgba(245,239,230,0.92) 0%, rgba(245,239,230,0) 100%);
-  backdrop-filter: blur(8px);
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
 }
 .nav-left {
   position: absolute; left: 24px;
@@ -212,7 +184,7 @@ body {
 .timeline-dot {
   position: absolute; left: -34px; top: 8px;
   width: 16px; height: 16px; border-radius: 50%;
-  background: var(--paper-light); border: 3px solid var(--cinnabar);
+  background: var(--paper-base); border: 3px solid var(--cinnabar);
   box-shadow: 0 0 0 4px rgba(184,52,46,0.1), 0 2px 8px rgba(184,52,46,0.3);
   z-index: 1;
 }
@@ -354,10 +326,8 @@ body {
 
 <nav class="top-nav">
   <a href="/" class="nav-left">
-    <div class="seal-logo">
-      <span class="seal-text">劍</span>
-    </div>
-    <div class="nav-title">劍修哥 · 個人誌</div>
+    <img src="images/avatar.jpg" alt="剑修哥" class="nav-avatar">
+    <div class="nav-title">剑修哥 · 个人主页</div>
   </a>
   <button class="nav-toggle" onclick="toggleNavMenu()">
     <span></span><span></span><span></span>
@@ -509,7 +479,7 @@ body {
     <div class="footer-seal">
       <span class="footer-seal-text">劍</span>
     </div>
-    <p class="footer-text">劍修哥 · 個人誌 · 修行日誌</p>
+    <p class="footer-text">剑修哥 · 个人主页 · 修行日誌</p>
     <a href="/" class="back-home">← 返回首页</a>
   </footer>
 

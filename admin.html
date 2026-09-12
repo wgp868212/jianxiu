@@ -8,9 +8,9 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --bg: #f5efe6; --card: #fff; --border: #cdbc9f;
-  --text: #2b2520; --muted: #7a7169; --primary: #b8342e;
-  --primary-light: #d4503d; --success: #3d7a6e;
+  --bg: #ffffff; --card: #fff; --border: #dfe3f0;
+  --text: #4a4f6b; --muted: #8f94ab; --primary: #ff6b9d;
+  --primary-light: #ff8fb8; --success: #5ab0ff;
 }
 body {
   font-family: -apple-system, 'Noto Sans SC', sans-serif;
@@ -141,7 +141,7 @@ body {
 <!-- 登录页 -->
 <div class="login-wrap" id="loginPage">
   <div class="login-box">
-    <h1>劍修哥 · 后台管理</h1>
+    <h1>剑修哥 · 后台管理</h1>
     <p>请输入管理密码登录</p>
     <input type="password" id="loginPwd" placeholder="管理密码" onkeydown="if(event.key==='Enter')doLogin()">
     <button onclick="doLogin()">登 录</button>
@@ -152,7 +152,7 @@ body {
 <!-- 后台主体 -->
 <div id="adminPage" style="display:none;">
   <div class="admin-header">
-    <h1>劍修哥 · 网站后台管理</h1>
+    <h1>剑修哥 · 网站后台管理</h1>
     <div class="actions">
       <a href="/" target="_blank" class="btn">查看网站</a>
       <button class="btn" onclick="saveConfig()">保存配置</button>
