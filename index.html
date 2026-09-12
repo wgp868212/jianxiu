@@ -37,22 +37,22 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --ink-deep: #1a1613; --ink-dark: #2b2520; --ink-mid: #4a423d;
-  --ink-light: #7a7169; --ink-faint: #a89e94;
-  --paper-light: #f5efe6; --paper-base: #ebe0cf;
-  --paper-warm: #e0d3bd; --paper-deep: #cdbc9f;
-  --cinnabar: #b8342e; --cinnabar-light: #d4503d; --cinnabar-deep: #8c2620;
-  --jade: #3d7a6e; --jade-light: #5a9e90; --jade-deep: #2c5a50;
-  --gold: #c9a96e; --gold-light: #e0c98a; --gold-deep: #a68a4e;
-  --font-display: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
-  --font-serif: 'Noto Serif SC', serif;
+  --ink-deep: #3a3f5c; --ink-dark: #4a4f6b; --ink-mid: #6b7089;
+  --ink-light: #8f94ab; --ink-faint: #b8bccd;
+  --paper-light: #ffffff; --paper-base: #f7f8fc;
+  --paper-warm: #eef0f8; --paper-deep: #dfe3f0;
+  --cinnabar: #ff6b9d; --cinnabar-light: #ff8fb8; --cinnabar-deep: #e0527f;
+  --jade: #5ab0ff; --jade-light: #8cc8ff; --jade-deep: #3a8fdb;
+  --gold: #ffb84d; --gold-light: #ffd78a; --gold-deep: #e69c30;
+  --font-display: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  --font-serif: 'Noto Sans SC', 'PingFang SC', sans-serif;
   --font-sans: 'Noto Sans SC', sans-serif;
   /* iOS毛玻璃 */
   --glass-bg: rgba(255,255,255,0.55);
   --glass-bg-strong: rgba(255,255,255,0.7);
   --glass-border: rgba(255,255,255,0.6);
   --glass-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  --glass-blur: 20px;
+  --glass-blur: 8px;
 }
 
 html { scroll-behavior: smooth; }
@@ -70,13 +70,14 @@ body {
 /* 壁纸背景层 */
 .wallpaper-bg {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  z-index: -2; background-size: cover; background-position: center;
+  z-index: 0; background-size: cover; background-position: center;
   transition: opacity 0.8s ease;
 }
+body { background: var(--paper-base); }
 .wallpaper-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  z-index: -1; background: rgba(245,239,230,0.35);
-  backdrop-filter: blur(2px);
+  z-index: 1; background: rgba(255,255,255,0.35);
+  pointer-events: none;
 }
 
 .bg-layer {
@@ -93,48 +94,11 @@ body {
   opacity: 0.8;
 }
 
-.ink-wash {
-  position: absolute; border-radius: 50%; filter: blur(60px);
-  opacity: 0.08; /* animation: inkDrift disabled for performance */
-}
-.ink-wash-1 { width: 500px; height: 500px; background: radial-gradient(circle, var(--ink-deep) 0%, transparent 70%); top: -100px; left: -100px; animation-delay: 0s; }
-.ink-wash-2 { width: 400px; height: 400px; background: radial-gradient(circle, var(--jade) 0%, transparent 70%); bottom: 10%; right: -50px; animation-delay: -7s; }
-.ink-wash-3 { width: 350px; height: 350px; background: radial-gradient(circle, var(--cinnabar) 0%, transparent 70%); top: 50%; left: 30%; opacity: 0.05; animation-delay: -14s; }
 
-@keyframes inkDrift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -20px) scale(1.05); }
   66% { transform: translate(-20px, 20px) scale(0.95); }
 }
 
-.mountain-bg {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 300px;
-  background: linear-gradient(180deg, transparent 0%, rgba(44, 90, 80, 0.03) 100%);
-  opacity: 0.6;
-}
-.mountain-bg::before, .mountain-bg::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-  height: 200px; background-repeat: no-repeat; background-position: bottom; background-size: cover;
-}
-.mountain-bg::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200' preserveAspectRatio='none'%3E%3Cpath d='M0,200 L0,140 L80,120 L160,150 L240,100 L320,130 L420,80 L520,110 L620,70 L720,120 L820,90 L920,130 L1020,100 L1120,140 L1200,110 L1200,200 Z' fill='%232c5a50' opacity='0.06'/%3E%3C/svg%3E");
-}
-.mountain-bg::after {
-  height: 120px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,120 L0,90 L100,70 L200,85 L350,50 L480,75 L600,40 L720,65 L850,45 L980,70 L1100,55 L1200,80 L1200,120 Z' fill='%231a1613' opacity='0.05'/%3E%3C/svg%3E");
-}
 
-.mist-layer {
-  position: absolute; width: 200%; height: 100px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 20%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 80%, transparent 100%);
-  filter: blur(20px); /* animation: mistFlow disabled */ opacity: 0.4;
-}
-.mist-1 { top: 20%; animation-duration: 40s; }
-.mist-2 { top: 60%; animation-duration: 55s; animation-direction: reverse; opacity: 0.25; }
-
-@keyframes mistFlow {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0%); }
 }
 
 #particleCanvas {
@@ -144,31 +108,30 @@ body {
 
 #sakuraCanvas {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 1;
+  pointer-events: none; z-index: 3;
 }
 
 .top-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: center;
   padding: 14px 32px;
-  background: linear-gradient(180deg, rgba(245,239,230,0.92) 0%, rgba(245,239,230,0.7) 70%, rgba(245,239,230,0) 100%);
-  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
 }
 .nav-left {
   position: absolute; left: 32px;
   display: flex; align-items: center; gap: 12px; text-decoration: none;
 }
-.seal-logo {
-  width: 40px; height: 40px; background: var(--cinnabar); border-radius: 4px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15), 0 2px 8px rgba(184,52,46,0.3);
-  transform: rotate(-3deg); transition: transform 0.3s ease;
+.nav-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  object-fit: cover; border: 2px solid rgba(255,255,255,0.9);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
 }
-.seal-logo:hover { transform: rotate(0deg) scale(1.1); }
-.seal-text {
-  font-family: var(--font-display); font-size: 22px; color: var(--paper-light);
-  font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
+.nav-avatar:hover { transform: scale(1.1) rotate(5deg); }
 .nav-title {
   font-family: var(--font-display); font-size: 17px; color: var(--ink-deep); letter-spacing: 3px;
 }
@@ -232,31 +195,6 @@ body {
   position: relative; text-align: center; padding: 40px 0 60px;
 }
 
-.sword-decoration {
-  position: absolute; top: 50%; width: 4px; height: 280px;
-  transform: translateY(-50%); opacity: 0.15;
-}
-.sword-left { left: 5%; transform: translateY(-50%) rotate(-8deg); }
-.sword-right { right: 5%; transform: translateY(-50%) rotate(8deg); }
-
-.sword-blade {
-  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 3px; height: 200px;
-  background: linear-gradient(180deg, transparent 0%, var(--ink-light) 10%, #e8e8e8 50%, var(--ink-light) 90%, transparent 100%);
-  border-radius: 2px;
-}
-.sword-guard {
-  position: absolute; top: 200px; left: 50%; transform: translateX(-50%);
-  width: 24px; height: 6px; background: var(--gold); border-radius: 2px;
-  box-shadow: 0 0 4px rgba(201,169,110,0.5);
-}
-.sword-handle {
-  position: absolute; top: 206px; left: 50%; transform: translateX(-50%);
-  width: 4px; height: 50px;
-  background: linear-gradient(180deg, var(--cinnabar), var(--cinnabar-deep));
-  border-radius: 0 0 2px 2px;
-}
-
 .avatar-outer-ring {
   position: relative; width: 200px; height: 200px;
   margin: 0 auto 32px; transition: transform 0.3s ease-out;
@@ -269,7 +207,7 @@ body {
 .avatar-middle-ring {
   position: absolute; inset: 10px; border-radius: 50%;
   background: conic-gradient(from 0deg, var(--gold), var(--cinnabar), var(--jade), var(--gold));
-  padding: 3px; animation: ringRotate 8s linear infinite;
+  padding: 3px; animation: none; /* 旋转动画已禁用 */
 }
 .avatar-inner-ring {
   width: 100%; height: 100%; border-radius: 50%;
@@ -361,7 +299,7 @@ body {
 
 .stats-frame {
   position: relative; background: rgba(255,255,255,0.4);
-  backdrop-filter: blur(10px); border: 1px solid var(--paper-deep);
+  backdrop-filter: blur(5px); border: 1px solid var(--paper-deep);
   padding: 48px 32px; border-radius: 4px;
 }
 .stats-corner {
@@ -421,7 +359,7 @@ body {
   position: relative; width: 100%; max-width: 520px;
   background: linear-gradient(135deg, rgba(44,90,80,0.08) 0%, rgba(255,255,255,0.6) 50%, rgba(201,169,110,0.08) 100%);
   border: 1px solid var(--paper-deep); border-radius: 8px;
-  padding: 36px 32px 32px; backdrop-filter: blur(8px);
+  padding: 36px 32px 32px; backdrop-filter: blur(5px);
   box-shadow: 0 8px 32px rgba(26,22,19,0.08); transition: all 0.4s ease;
 }
 .fan-card:hover {
@@ -491,7 +429,7 @@ body {
 }
 .video-card {
   background: rgba(255,255,255,0.5); border: 1px solid var(--paper-deep);
-  border-radius: 8px; overflow: hidden; backdrop-filter: blur(8px);
+  border-radius: 8px; overflow: hidden; backdrop-filter: blur(5px);
   transition: all 0.4s ease; cursor: pointer; text-decoration: none;
   display: flex; flex-direction: column;
 }
@@ -547,7 +485,7 @@ body {
 .download-section { margin: 60px 0; }
 .download-frame {
   position: relative; background: linear-gradient(135deg, rgba(61,122,110,0.06) 0%, rgba(255,255,255,0.5) 50%, rgba(201,169,110,0.06) 100%);
-  backdrop-filter: blur(10px); border: 1px solid var(--paper-deep);
+  backdrop-filter: blur(5px); border: 1px solid var(--paper-deep);
   padding: 40px 32px; border-radius: 8px;
 }
 .download-list {
@@ -604,7 +542,7 @@ body {
 .reward-section { margin: 60px 0; }
 .reward-frame {
   position: relative; background: linear-gradient(135deg, rgba(184,52,46,0.05) 0%, rgba(255,255,255,0.5) 50%, rgba(201,169,110,0.05) 100%);
-  backdrop-filter: blur(10px); border: 1px solid var(--paper-deep);
+  backdrop-filter: blur(5px); border: 1px solid var(--paper-deep);
   padding: 40px 32px; border-radius: 8px; text-align: center;
 }
 .reward-desc {
@@ -794,7 +732,7 @@ body {
   .nav-menu {
     position: absolute; top: 100%; left: 0; right: 0;
     flex-direction: column; gap: 0;
-    background: rgba(245,239,230,0.98); backdrop-filter: blur(10px);
+    background: rgba(245,239,230,0.98); backdrop-filter: blur(5px);
     padding: 8px 0; border-bottom: 1px solid var(--paper-deep);
     transform: translateY(-10px); opacity: 0; visibility: hidden;
     transition: all 0.3s ease;
@@ -804,7 +742,6 @@ body {
   .nav-menu a { display: block; padding: 12px 24px; border-radius: 0; }
   .nav-menu a::after { display: none; }
   .main-container { padding-top: 100px; }
-  .sword-decoration { display: none; }
   .avatar-outer-ring { width: 160px; height: 160px; }
   .hero-name { letter-spacing: 8px; }
   .hero-motto { font-size: 15px; letter-spacing: 4px; }
@@ -903,24 +840,11 @@ body {
   opacity: 0.8; padding-left: 8px;
 }
 
-.intro-seal {
-  position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
-  width: 60px; height: 60px; background: var(--cinnabar);
-  border-radius: 4px; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 20px rgba(184,52,46,0.5), inset 0 0 0 2px rgba(255,255,255,0.2);
-  animation: sealStamp 0.8s ease-out forwards;
-  animation-delay: 2s; opacity: 0; transform: translateX(-50%) scale(3);
-}
 @keyframes sealStamp {
   0% { opacity: 0; transform: translateX(-50%) scale(3) rotate(-15deg); }
   60% { opacity: 1; transform: translateX(-50%) scale(0.9) rotate(3deg); }
   100% { opacity: 1; transform: translateX(-50%) scale(1) rotate(-3deg); }
 }
-.intro-seal-text {
-  font-family: var(--font-display); font-size: 28px; color: var(--paper-light);
-  font-weight: 700;
-}
-
 .intro-particles {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
   pointer-events: none;
@@ -928,7 +852,7 @@ body {
 .intro-particle {
   position: absolute; width: 3px; height: 3px; background: var(--gold);
   border-radius: 50%; opacity: 0;
-  animation: particleFloat 3s ease-in-out infinite;
+  animation: none; /* 粒子动画已禁用 */
 }
 @keyframes particleFloat {
   0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
@@ -953,7 +877,7 @@ body {
    ============================================ */
 .download-modal-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(26,22,19,0.6); backdrop-filter: blur(6px);
+  background: rgba(26,22,19,0.6); backdrop-filter: blur(4px);
   z-index: 1000; display: flex; align-items: center; justify-content: center;
   opacity: 0; visibility: hidden; transition: all 0.3s ease;
 }
@@ -1289,14 +1213,6 @@ body {
 .fps-counter.low { color: #e07060; }
 
 /* 剑光划过效果 */
-.sword-slash {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 9998; opacity: 0;
-  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.8) 50%, transparent 60%);
-}
-.sword-slash.active {
-  animation: swordSlash 0.8s ease-out;
-}
 @keyframes swordSlash {
   0% { opacity: 0; transform: translateX(-100%); }
   30% { opacity: 1; }
@@ -1394,8 +1310,8 @@ body {
 /* 导航栏增强毛玻璃 */
 .top-nav {
   background: rgba(255,255,255,0.5) !important;
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
   border-bottom: 1px solid rgba(255,255,255,0.3);
 }
 
@@ -1404,8 +1320,8 @@ body {
   position: fixed; bottom: 24px; left: 24px; z-index: 90;
   display: flex; align-items: center; gap: 8px;
   background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255,255,255,0.5);
   border-radius: 50px; padding: 8px 12px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.12);
@@ -1437,14 +1353,12 @@ body {
 
 /* 性能优化：禁用重特效 */
 #particleCanvas, #starTrailCanvas, #swordSlash { display: none !important; }
-.sword-decoration { display: none !important; }
-.ink-wash, .mist-layer, .mountain-bg { display: none !important; }
 .avatar-outer-ring, .avatar-middle-ring, .avatar-inner-ring { animation: none !important; }
 
 /* FPS显示器调整 */
 #fpsDisplay {
   background: rgba(255,255,255,0.6) !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(5px);
 }
 
 /* ============================================
@@ -1453,6 +1367,7 @@ body {
 
 /* 页面容器 */
 .page-wrapper {
+  position: relative; z-index: 2;
   max-width: 1100px; margin: 0 auto;
   padding: 100px 20px 40px;
 }
@@ -1468,8 +1383,8 @@ body {
 /* 通用毛玻璃卡片 */
 .glass-card {
   background: rgba(255,255,255,0.55);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.6);
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -1589,8 +1504,8 @@ body {
 /* 状态横幅 */
 .status-banner {
   background: rgba(255,255,255,0.5);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255,255,255,0.5);
   border-radius: 16px;
   padding: 16px 24px;
@@ -1620,8 +1535,8 @@ body {
 }
 .video-card-new {
   background: rgba(255,255,255,0.55);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.6);
   border-radius: 18px;
   overflow: hidden;
@@ -1687,8 +1602,8 @@ body {
 /* 底部状态栏 */
 .status-bar {
   background: rgba(255,255,255,0.55);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.6);
   border-radius: 16px;
   padding: 14px 24px;
@@ -1744,21 +1659,6 @@ body {
 </head>
 <body>
 
-<!-- 开场动画（已禁用） -->
-<div class="intro-overlay" id="introOverlay" style="display:none;">
-  <div class="intro-ink-burst"></div>
-  <div class="intro-ink-splash"></div>
-  <div class="intro-particles" id="introParticles"></div>
-  <button class="intro-skip" onclick="skipIntro()">跳过 →</button>
-  <div class="intro-title-wrap">
-    <h1 class="intro-title">劍修哥</h1>
-    <p class="intro-subtitle">一剑破万法 · 逍遥天地间</p>
-  </div>
-  <div class="intro-seal">
-    <span class="intro-seal-text">劍</span>
-  </div>
-</div>
-
 <!-- 壁纸背景层 -->
 <div class="wallpaper-bg" id="wallpaperBg"></div>
 <div class="wallpaper-overlay"></div>
@@ -1796,28 +1696,19 @@ body {
   </div>
 </div>
 
-<div class="bg-layer">
-  <div class="ink-wash ink-wash-1"></div>
-  <div class="ink-wash ink-wash-2"></div>
-  <div class="ink-wash ink-wash-3"></div>
-  <div class="mountain-bg"></div>
-  <div class="mist-layer mist-1"></div>
-  <div class="mist-layer mist-2"></div>
-</div>
+
 
 <canvas id="particleCanvas"></canvas>
 <canvas id="sakuraCanvas"></canvas>
 <canvas id="starTrailCanvas"></canvas>
 
 <div class="scroll-progress" id="scrollProgress"></div>
-<div class="sword-slash" id="swordSlash"></div>
+
 
 <nav class="top-nav">
   <a href="#home" class="nav-left">
-    <div class="seal-logo">
-      <span class="seal-text">劍</span>
-    </div>
-    <div class="nav-title">劍修哥 · 個人誌</div>
+    <img src="images/avatar.jpg" alt="剑修哥" class="nav-avatar">
+    <div class="nav-title">剑修哥 · 个人主页</div>
   </a>
   <ul class="nav-menu">
     <li><a href="#home">首页</a></li>
@@ -1960,7 +1851,7 @@ body {
 
     <span class="dot"></span>
 
-    <span>一剑破万法 · 逍遥天地间 | 专注我的世界材质包与PVP技巧</span>
+    <span>努力成为更好的UP主 ✨ | 专注我的世界材质包与PVP技巧</span>
 
   </div>
 
@@ -2268,81 +2159,6 @@ body {
     return;
   }
 
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    class Particle {
-      constructor() { this.reset(true); }
-      reset(initial) {
-        this.x = Math.random() * canvas.width;
-        this.y = initial ? Math.random() * canvas.height : -20;
-        this.size = Math.random() * 6 + 4;
-        this.speedY = Math.random() * 1 + 0.5;
-        this.speedX = Math.random() * 1 - 0.5;
-        this.rotation = Math.random() * Math.PI * 2;
-        this.rotationSpeed = (Math.random() - 0.5) * 0.03;
-        this.opacity = Math.random() * 0.4 + 0.15;
-        this.type = Math.random() > 0.5 ? 'leaf' : 'petal';
-        this.swayAmplitude = Math.random() * 30 + 10;
-        this.swaySpeed = Math.random() * 0.02 + 0.01;
-        this.swayOffset = Math.random() * Math.PI * 2;
-      }
-      update(time) {
-        this.y += this.speedY;
-        this.x += this.speedX + Math.sin(time * this.swaySpeed + this.swayOffset) * 0.5;
-        this.rotation += this.rotationSpeed;
-        if (this.y > canvas.height + 30 || this.x < -30 || this.x > canvas.width + 30) {
-          this.reset(false);
-          this.x = Math.random() * canvas.width;
-        }
-      }
-      draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.rotation);
-        ctx.globalAlpha = this.opacity;
-        if (this.type === 'leaf') {
-          ctx.fillStyle = '#5a9e90';
-          ctx.beginPath();
-          ctx.ellipse(0, 0, this.size, this.size * 0.35, 0, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.strokeStyle = '#3d7a6e';
-          ctx.lineWidth = 0.5;
-          ctx.beginPath();
-          ctx.moveTo(-this.size, 0);
-          ctx.lineTo(this.size, 0);
-          ctx.stroke();
-        } else {
-          ctx.fillStyle = '#e8a5a0';
-          ctx.beginPath();
-          ctx.ellipse(0, 0, this.size * 0.8, this.size * 0.5, 0, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.restore();
-      }
-    }
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push(new Particle());
-    }
-
-    let startTime = performance.now();
-    function animate(timestamp) {
-      requestAnimationFrame(animate);
-      const delta = timestamp - lastTime;
-      if (delta < frameInterval) return;
-      lastTime = timestamp - (delta % frameInterval);
-      const elapsed = performance.now() - startTime;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => { p.update(elapsed); p.draw(); });
-    }
-    requestAnimationFrame(animate);
-  }
-
   async function fetchBilibiliStats() {
     const mid = '36518358';
     const apiUrl = `https://api.bilibili.com/x/web-interface/card?mid=${mid}`;
@@ -2518,7 +2334,7 @@ body {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let petals = [];
-    const PETAL_COUNT = window.innerWidth < 768 ? 4 : 8;
+    const PETAL_COUNT = window.innerWidth < 768 ? 3 : 5;
     let animId = null;
 
     function resize() {
@@ -2573,7 +2389,7 @@ body {
     }
 
     let sakuraLastTime = 0;
-    const SAKURA_FPS = 15;
+    const SAKURA_FPS = 10;
     const sakuraInterval = 1000 / SAKURA_FPS;
 
     function animate(timestamp) {
@@ -2682,7 +2498,6 @@ body {
     const canvas = document.getElementById('starTrailCanvas');
     if (!canvas) return;
     canvas.style.display = 'none';
-  }
   }
 
   // ========== 剑光划过效果（已禁用，节省性能） ==========
