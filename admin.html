@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>后台管理 · 剑修哥</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #f5efe6; --card: #fff; --border: #cdbc9f;
+  --text: #2b2520; --muted: #7a7169; --primary: #b8342e;
+  --primary-light: #d4503d; --success: #3d7a6e;
+}
+body {
+  font-family: -apple-system, 'Noto Sans SC', sans-serif;
+  background: var(--bg); color: var(--text); min-height: 100vh;
+  line-height: 1.6;
+}
+/* 登录页 */
+.login-wrap {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.login-box {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 40px; width: 100%; max-width: 380px; text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+}
+.login-box h1 { font-size: 22px; margin-bottom: 8px; color: var(--text); }
+.login-box p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.login-box input {
+  width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
+  font-size: 15px; margin-bottom: 16px; outline: none; transition: border-color 0.2s;
+}
+.login-box input:focus { border-color: var(--primary); }
+.login-box button {
+  width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none;
+  border-radius: 8px; font-size: 15px; cursor: pointer; transition: background 0.2s;
+}
+.login-box button:hover { background: var(--primary-light); }
+.login-error { color: var(--primary); font-size: 13px; margin-top: 12px; display: none; }
+
+/* 后台主体 */
+.admin-header {
+  background: var(--card); border-bottom: 1px solid var(--border); padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.admin-header h1 { font-size: 18px; }
+.admin-header .actions { display: flex; gap: 10px; }
+.btn {
+  padding: 8px 18px; border-radius: 6px; font-size: 13px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--card); color: var(--text);
+  transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn:hover { border-color: var(--primary); color: var(--primary); }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-light); color: #fff; }
+.btn-success { background: var(--success); color: #fff; border-color: var(--success); }
+.btn-success:hover { opacity: 0.9; color: #fff; }
+
+.admin-body { display: flex; min-height: calc(100vh - 57px); }
+.admin-sidebar {
+  width: 200px; background: var(--card); border-right: 1px solid var(--border);
+  padding: 16px 0; flex-shrink: 0;
+}
+.admin-sidebar a {
+  display: block; padding: 10px 20px; color: var(--muted); text-decoration: none;
+  font-size: 14px; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent;
+}
+.admin-sidebar a:hover, .admin-sidebar a.active {
+  color: var(--primary); background: rgba(184,52,46,0.05); border-left-color: var(--primary);
+}
+.admin-content { flex: 1; padding: 24px; overflow-y: auto; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.form-section {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 24px; margin-bottom: 20px;
+}
+.form-section h2 { font-size: 16px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
+  font-size: 14px; outline: none; transition: border-color 0.2s; font-family: inherit;
+}
+.form-group input:focus, .form-group textarea:focus { border-color: var(--primary); }
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+.video-item, .download-item {
+  border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px;
+  position: relative; background: rgba(0,0,0,0.01);
+}
+.video-item h3, .download-item h3 { font-size: 14px; margin-bottom: 12px; color: var(--primary); }
+.remove-btn {
+  position: absolute; top: 12px; right: 12px; background: none; border: none;
+  color: var(--muted); cursor: pointer; font-size: 18px; padding: 4px 8px; border-radius: 4px;
+}
+.remove-btn:hover { background: rgba(184,52,46,0.1); color: var(--primary); }
+.add-btn {
+  width: 100%; padding: 10px; border: 1px dashed var(--border); border-radius: 6px;
+  background: none; color: var(--muted); cursor: pointer; font-size: 14px; transition: all 0.2s;
+}
+.add-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--text); color: #fff; padding: 12px 24px; border-radius: 8px;
+  font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 1000; pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.export-progress {
+  margin-top: 16px; display: none;
+}
+.progress-bar {
+  width: 100%; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: var(--primary); width: 0%; transition: width 0.3s;
+}
+.progress-text { font-size: 12px; color: var(--muted); margin-top: 6px; text-align: center; }
+
+@media (max-width: 768px) {
+  .admin-body { flex-direction: column; }
+  .admin-sidebar { width: 100%; display: flex; overflow-x: auto; padding: 8px; }
+  .admin-sidebar a { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
+  .admin-sidebar a:hover, .admin-sidebar a.active { border-left: none; border-bottom-color: var(--primary); }
+  .form-row { grid-template-columns: 1fr; }
+  .admin-content { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 登录页 -->
+<div class="login-wrap" id="loginPage">
+  <div class="login-box">
+    <h1>劍修哥 · 后台管理</h1>
+    <p>请输入管理密码登录</p>
+    <input type="password" id="loginPwd" placeholder="管理密码" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">登 录</button>
+    <div class="login-error" id="loginError">密码错误，请重试</div>
+  </div>
+</div>
+
+<!-- 后台主体 -->
+<div id="adminPage" style="display:none;">
+  <div class="admin-header">
+    <h1>劍修哥 · 网站后台管理</h1>
+    <div class="actions">
+      <a href="/" target="_blank" class="btn">查看网站</a>
+      <button class="btn" onclick="saveConfig()">保存配置</button>
+      <button class="btn btn-success" onclick="exportSite()">导出完整网站包</button>
+      <button class="btn" onclick="doLogout()">退出</button>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <div class="admin-sidebar">
+      <a class="active" onclick="switchTab('basic',this)">基本信息</a>
+      <a onclick="switchTab('stats',this)">数据统计</a>
+      <a onclick="switchTab('videos',this)">视频管理</a>
+      <a onclick="switchTab('downloads',this)">下载管理</a>
+      <a onclick="switchTab('other',this)">其他设置</a>
+    </div>
+
+    <div class="admin-content">
+      <!-- 基本信息 -->
+      <div class="tab-panel active" id="tab-basic">
+        <div class="form-section">
+          <h2>基本信息</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>昵称</label>
+              <input type="text" id="cfg-name" value="剑修哥">
+            </div>
+            <div class="form-group">
+              <label>B站等级</label>
+              <input type="text" id="cfg-level" value="LV5">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>个性签名</label>
+            <input type="text" id="cfg-sign" value="粉丝群1003572258 名字:Bili_剑修哥">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>粉丝群名称</label>
+              <input type="text" id="cfg-groupName" value="Bili_剑修哥">
+            </div>
+            <div class="form-group">
+              <label>粉丝群号</label>
+              <input type="text" id="cfg-groupNum" value="1003572258">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>B站主页链接</label>
+            <input type="text" id="cfg-bilibili" value="https://space.bilibili.com/36518358">
+          </div>
+        </div>
+      </div>
+
+      <!-- 数据统计 -->
+      <div class="tab-panel" id="tab-stats">
+        <div class="form-section">
+          <h2>数据统计（不开启实时同步时使用）</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>粉丝数</label>
+              <input type="number" id="cfg-fans" value="365">
+            </div>
+            <div class="form-group">
+              <label>关注数</label>
+              <input type="number" id="cfg-following" value="412">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>获赞数</label>
+              <input type="number" id="cfg-likes" value="1201">
+            </div>
+            <div class="form-group">
+              <label>投稿视频数</label>
+              <input type="number" id="cfg-videos" value="12">
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;">
+              <input type="checkbox" id="cfg-realtime" checked style="width:auto;">
+              开启B站数据实时同步（页面加载时自动获取最新数据）
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 视频管理 -->
+      <div class="tab-panel" id="tab-videos">
+        <div class="form-section">
+          <h2>精选视频（最多显示3个）</h2>
+          <div id="videoList"></div>
+          <button class="add-btn" onclick="addVideo()">+ 添加视频</button>
+        </div>
+      </div>
+
+      <!-- 下载管理 -->
+      <div class="tab-panel" id="tab-downloads">
+        <div class="form-section">
+          <h2>资源下载</h2>
+          <div id="downloadList"></div>
+          <button class="add-btn" onclick="addDownload()">+ 添加下载项</button>
+        </div>
+      </div>
+
+      <!-- 其他设置 -->
+      <div class="tab-panel" id="tab-other">
+        <div class="form-section">
+          <h2>图片设置</h2>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
+            头像和收款码请直接替换网站目录下的 images/avatar.jpg 和 images/reward.jpg 文件。
+            视频封面替换 images/video1.jpg、video2.jpg、video3.jpg。
+          </p>
+        </div>
+        <div class="form-section">
+          <h2>配置导入/导出</h2>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" onclick="exportConfig()">导出配置JSON</button>
+            <label class="btn" style="cursor:pointer;">
+              导入配置JSON
+              <input type="file" accept=".json" style="display:none;" onchange="importConfig(event)">
+            </label>
+            <button class="btn" onclick="resetConfig()">恢复默认配置</button>
+          </div>
+        </div>
+        <div class="form-section">
+          <h2>管理密码</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>新密码</label>
+              <input type="password" id="newPwd" placeholder="留空则不修改">
+            </div>
+            <div class="form-group">
+              <label>确认新密码</label>
+              <input type="password" id="newPwd2" placeholder="确认新密码">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="changePwd()">修改密码</button>
+        </div>
+      </div>
+
+      <div class="export-progress" id="exportProgress">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-text" id="progressText">正在打包...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// 默认配置
+const defaultConfig = {
+  name: '剑修哥', level: 'LV5',
+  sign: '粉丝群1003572258 名字:Bili_剑修哥',
+  groupName: 'Bili_剑修哥', groupNum: '1003572258',
+  bilibili: 'https://space.bilibili.com/36518358',
+  fans: 365, following: 412, likes: 1201, videos: 12, realtime: true,
+  videoList: [
+    { title: '【1.20.1材质包适配布吉岛】【动态模糊光影】我用的材质包他来了', bvid: 'BV1Chb8zyEKQ', play: '19052', like: '443', fav: '634', duration: '01:31' },
+    { title: '为了一个动态模糊，让PVP玩家争抢......', bvid: 'BV1VP61BUESV', play: '18665', like: '322', fav: '480', duration: '01:01' },
+    { title: '夸克网盘快速下载方法（以后下载文件都用夸克）', bvid: 'BV1ZpUpB1ECi', play: '3553', like: '55', fav: '47', duration: '00:51' }
+  ],
+  downloadList: [
+    { name: '蓝盾下载', desc: 'Radmin LAN 远程局域网工具，点击即可下载', file: 'files/landun.zip' }
+  ]
+};
+
+let config = {};
+
+// 初始化
+function init() {
+  loadConfig();
+  renderVideos();
+  renderDownloads();
+}
+
+// 加载配置
+function loadConfig() {
+  const saved = localStorage.getItem('siteConfig');
+  config = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultConfig));
+  // 填充表单
+  document.getElementById('cfg-name').value = config.name;
+  document.getElementById('cfg-level').value = config.level;
+  document.getElementById('cfg-sign').value = config.sign;
+  document.getElementById('cfg-groupName').value = config.groupName;
+  document.getElementById('cfg-groupNum').value = config.groupNum;
+  document.getElementById('cfg-bilibili').value = config.bilibili;
+  document.getElementById('cfg-fans').value = config.fans;
+  document.getElementById('cfg-following').value = config.following;
+  document.getElementById('cfg-likes').value = config.likes;
+  document.getElementById('cfg-videos').value = config.videos;
+  document.getElementById('cfg-realtime').checked = config.realtime;
+}
+
+// 从表单收集配置
+function collectConfig() {
+  config.name = document.getElementById('cfg-name').value;
+  config.level = document.getElementById('cfg-level').value;
+  config.sign = document.getElementById('cfg-sign').value;
+  config.groupName = document.getElementById('cfg-groupName').value;
+  config.groupNum = document.getElementById('cfg-groupNum').value;
+  config.bilibili = document.getElementById('cfg-bilibili').value;
+  config.fans = parseInt(document.getElementById('cfg-fans').value) || 0;
+  config.following = parseInt(document.getElementById('cfg-following').value) || 0;
+  config.likes = parseInt(document.getElementById('cfg-likes').value) || 0;
+  config.videos = parseInt(document.getElementById('cfg-videos').value) || 0;
+  config.realtime = document.getElementById('cfg-realtime').checked;
+}
+
+// 保存配置
+function saveConfig() {
+  collectConfig();
+  localStorage.setItem('siteConfig', JSON.stringify(config));
+  showToast('配置已保存');
+}
+
+// 渲染视频列表
+function renderVideos() {
+  const container = document.getElementById('videoList');
+  container.innerHTML = '';
+  config.videoList.forEach((v, i) => {
+    const div = document.createElement('div');
+    div.className = 'video-item';
+    div.innerHTML = `
+      <h3>视频 ${i+1}</h3>
+      <button class="remove-btn" onclick="removeVideo(${i})">&times;</button>
+      <div class="form-group">
+        <label>视频标题</label>
+        <input type="text" value="${v.title.replace(/"/g,'&quot;')}" onchange="config.videoList[${i}].title=this.value">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>BV号</label>
+          <input type="text" value="${v.bvid}" onchange="config.videoList[${i}].bvid=this.value">
+        </div>
+        <div class="form-group">
+          <label>时长</label>
+          <input type="text" value="${v.duration}" onchange="config.videoList[${i}].duration=this.value">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>播放量</label>
+          <input type="text" value="${v.play}" onchange="config.videoList[${i}].play=this.value">
+        </div>
+        <div class="form-group">
+          <label>点赞数</label>
+          <input type="text" value="${v.like}" onchange="config.videoList[${i}].like=this.value">
+        </div>
+        <div class="form-group">
+          <label>收藏数</label>
+          <input type="text" value="${v.fav}" onchange="config.videoList[${i}].fav=this.value">
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function addVideo() {
+  if (config.videoList.length >= 3) { showToast('最多添加3个视频'); return; }
+  config.videoList.push({ title: '', bvid: '', play: '0', like: '0', fav: '0', duration: '00:00' });
+  renderVideos();
+}
+
+function removeVideo(i) {
+  config.videoList.splice(i, 1);
+  renderVideos();
+}
+
+// 渲染下载列表
+function renderDownloads() {
+  const container = document.getElementById('downloadList');
+  container.innerHTML = '';
+  config.downloadList.forEach((d, i) => {
+    const div = document.createElement('div');
+    div.className = 'download-item';
+    div.innerHTML = `
+      <h3>下载项 ${i+1}</h3>
+      <button class="remove-btn" onclick="removeDownload(${i})">&times;</button>
+      <div class="form-group">
+        <label>下载名称</label>
+        <input type="text" value="${d.name.replace(/"/g,'&quot;')}" onchange="config.downloadList[${i}].name=this.value">
+      </div>
+      <div class="form-group">
+        <label>描述</label>
+        <input type="text" value="${d.desc.replace(/"/g,'&quot;')}" onchange="config.downloadList[${i}].desc=this.value">
+      </div>
+      <div class="form-group">
+        <label>文件路径（如 files/xxx.zip 或外部链接）</label>
+        <input type="text" value="${d.file.replace(/"/g,'&quot;')}" onchange="config.downloadList[${i}].file=this.value">
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function addDownload() {
+  config.downloadList.push({ name: '新下载项', desc: '描述', file: 'files/file.zip' });
+  renderDownloads();
+}
+
+function removeDownload(i) {
+  config.downloadList.splice(i, 1);
+  renderDownloads();
+}
+
+// 切换标签
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.admin-sidebar a').forEach(a => a.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  el.classList.add('active');
+}
+
+// 登录
+function doLogin() {
+  const pwd = document.getElementById('loginPwd').value;
+  const savedPwd = localStorage.getItem('adminPwd') || 'admin123';
+  if (pwd === savedPwd) {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('adminPage').style.display = 'block';
+    init();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  document.getElementById('adminPage').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('loginPwd').value = '';
+  document.getElementById('loginError').style.display = 'none';
+}
+
+// 修改密码
+function changePwd() {
+  const p1 = document.getElementById('newPwd').value;
+  const p2 = document.getElementById('newPwd2').value;
+  if (!p1) { showToast('请输入新密码'); return; }
+  if (p1 !== p2) { showToast('两次密码不一致'); return; }
+  localStorage.setItem('adminPwd', p1);
+  document.getElementById('newPwd').value = '';
+  document.getElementById('newPwd2').value = '';
+  showToast('密码修改成功');
+}
+
+// 导出配置
+function exportConfig() {
+  collectConfig();
+  const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'site-config.json'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('配置已导出');
+}
+
+// 导入配置
+function importConfig(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      config = JSON.parse(ev.target.result);
+      localStorage.setItem('siteConfig', JSON.stringify(config));
+      loadConfig();
+      renderVideos();
+      renderDownloads();
+      showToast('配置导入成功');
+    } catch(err) {
+      showToast('配置文件格式错误');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// 恢复默认
+function resetConfig() {
+  if (!confirm('确定恢复默认配置？当前修改将丢失。')) return;
+  config = JSON.parse(JSON.stringify(defaultConfig));
+  localStorage.setItem('siteConfig', JSON.stringify(config));
+  loadConfig();
+  renderVideos();
+  renderDownloads();
+  showToast('已恢复默认配置');
+}
+
+// 导出完整网站包
+async function exportSite() {
+  collectConfig();
+  localStorage.setItem('siteConfig', JSON.stringify(config));
+
+  const progress = document.getElementById('exportProgress');
+  const fill = document.getElementById('progressFill');
+  const text = document.getElementById('progressText');
+  progress.style.display = 'block';
+  fill.style.width = '10%';
+  text.textContent = '正在生成网站文件...';
+
+  try {
+    const zip = new JSZip();
+
+    // 生成注入了配置的index.html
+    fill.style.width = '30%';
+    text.textContent = '正在生成首页...';
+    let indexHtml = await fetch('index.html').then(r => r.text()).catch(() => '');
+    if (!indexHtml) {
+      // 如果fetch失败（本地打开时），用提示
+      indexHtml = '<!DOCTYPE html><html><body><p>请在部署后的网站上使用后台导出功能</p></body></html>';
+    }
+    // 注入配置脚本
+    const configScript = `<script>window.__SITE_CONFIG__=${JSON.stringify(config)};<\/script>`;
+    indexHtml = indexHtml.replace('</head>', configScript + '</head>');
+    zip.file('index.html', indexHtml);
+
+    // ds.html
+    fill.style.width = '50%';
+    text.textContent = '正在生成赞赏页...';
+    try {
+      const dsHtml = await fetch('ds.html').then(r => r.text());
+      zip.file('ds.html', dsHtml);
+    } catch(e) {}
+
+    // admin.html
+    zip.file('admin.html', document.documentElement.outerHTML);
+
+    // 图片和文件目录
+    fill.style.width = '70%';
+    text.textContent = '正在打包资源文件...';
+    const assets = ['images/avatar.jpg', 'images/reward.jpg', 'images/video1.jpg', 'images/video2.jpg', 'images/video3.jpg'];
+    for (const asset of assets) {
+      try {
+        const blob = await fetch(asset).then(r => r.blob());
+        zip.file(asset, blob);
+      } catch(e) {}
+    }
+
+    // files目录
+    try {
+      const fileList = await fetch('files/').then(r => r.text()).catch(() => '');
+      // 尝试获取已知文件
+      for (const dl of config.downloadList) {
+        if (dl.file.startsWith('files/')) {
+          try {
+            const blob = await fetch(dl.file).then(r => r.blob());
+            zip.file(dl.file, blob);
+          } catch(e) {}
+        }
+      }
+    } catch(e) {}
+
+    fill.style.width = '90%';
+    text.textContent = '正在压缩...';
+
+    const content = await zip.generateAsync({ type: 'blob' }, (metadata) => {
+      fill.style.width = metadata.percent + '%';
+      text.textContent = '压缩中... ' + metadata.percent.toFixed(0) + '%';
+    });
+
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '剑修哥_网站完整包.zip';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    fill.style.width = '100%';
+    text.textContent = '导出完成！';
+    showToast('网站包已导出');
+    setTimeout(() => { progress.style.display = 'none'; }, 2000);
+
+  } catch(err) {
+    console.error(err);
+    text.textContent = '导出失败：' + err.message;
+    showToast('导出失败');
+  }
+}
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>

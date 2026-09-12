@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>壁纸切换 · 剑修哥</title>
+<link rel="icon" type="image/jpeg" href="images/avatar.jpg">
+<link rel="apple-touch-icon" href="images/avatar.jpg">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink-deep: #1a1613; --ink-dark: #2b2520; --ink-mid: #4a423d;
+  --ink-light: #7a7169;
+  --cinnabar: #b8342e; --gold: #c9a96e;
+  --font-display: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
+  --font-serif: 'Noto Serif SC', serif;
+  --font-sans: 'Noto Sans SC', sans-serif;
+}
+
+body {
+  font-family: var(--font-serif); color: var(--ink-dark);
+  min-height: 100vh; padding: 40px 20px;
+  background: #f5efe6;
+  position: relative; overflow-x: hidden;
+}
+
+.wallpaper-bg {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: -2; background-size: cover; background-position: center;
+  transition: opacity 0.8s ease;
+}
+.wallpaper-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: -1; background: rgba(245,239,230,0.45);
+  backdrop-filter: blur(4px);
+}
+
+.page-header {
+  text-align: center; margin-bottom: 40px;
+}
+.page-title {
+  font-family: var(--font-display);
+  font-size: 36px; color: var(--ink-deep);
+  letter-spacing: 8px; margin-bottom: 8px;
+}
+.page-subtitle {
+  font-size: 14px; color: var(--ink-light);
+  letter-spacing: 4px;
+}
+
+.wallpaper-grid {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.wallpaper-card {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.wallpaper-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+}
+.wallpaper-card.active {
+  border: 2px solid var(--cinnabar);
+  box-shadow: 0 0 0 3px rgba(184,52,46,0.2), 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.wallpaper-preview {
+  width: 100%; aspect-ratio: 16/9;
+  background-size: cover; background-position: center;
+  position: relative;
+}
+.wallpaper-card.active .wallpaper-preview::after {
+  content: '✓ 当前使用';
+  position: absolute; top: 12px; right: 12px;
+  background: var(--cinnabar); color: white;
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 12px; font-family: var(--font-sans);
+  letter-spacing: 1px;
+}
+
+.wallpaper-info {
+  padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.wallpaper-name {
+  font-family: var(--font-display);
+  font-size: 18px; color: var(--ink-deep);
+  letter-spacing: 2px;
+}
+.wallpaper-use-btn {
+  background: var(--ink-deep); color: white;
+  border: none; padding: 8px 20px; border-radius: 20px;
+  font-family: var(--font-sans); font-size: 13px;
+  cursor: pointer; transition: all 0.2s ease;
+  letter-spacing: 1px;
+}
+.wallpaper-use-btn:hover { background: var(--cinnabar); }
+.wallpaper-card.active .wallpaper-use-btn {
+  background: var(--cinnabar);
+}
+
+.back-home {
+  display: block; width: fit-content; margin: 40px auto 0;
+  color: var(--ink-mid); text-decoration: none;
+  font-size: 14px; letter-spacing: 3px;
+  padding: 12px 32px; border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 50px; transition: all 0.3s ease;
+  font-family: var(--font-display);
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(10px);
+}
+.back-home:hover {
+  color: var(--cinnabar); border-color: var(--cinnabar);
+  background: rgba(184,52,46,0.05);
+}
+
+.toast {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: var(--ink-deep); color: #f5efe6;
+  padding: 14px 28px; border-radius: 8px;
+  font-family: var(--font-sans); font-size: 14px;
+  letter-spacing: 2px; opacity: 0; pointer-events: none;
+  transition: all 0.3s ease; z-index: 1000;
+}
+.toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+@media (max-width: 600px) {
+  .page-title { font-size: 28px; letter-spacing: 6px; }
+  .wallpaper-grid { grid-template-columns: 1fr; gap: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wallpaper-bg" id="wallpaperBg"></div>
+<div class="wallpaper-overlay"></div>
+
+<div class="page-header">
+  <h1 class="page-title">壁纸中心</h1>
+  <p class="page-subtitle">选择你喜欢的网站背景</p>
+</div>
+
+<div class="wallpaper-grid" id="wallpaperGrid">
+  <!-- 壁纸卡片由JS生成 -->
+</div>
+
+<a href="/" class="back-home">← 返回首页</a>
+
+<div id="toast" class="toast"><span>壁纸已切换</span></div>
+
+<script>
+const WALLPAPERS = [
+  { id: 1, name: '原神', desktop: 'images/wallpapers/wp1-desktop.jpg', mobile: 'images/wallpapers/wp1-mobile.jpg' },
+  { id: 2, name: '动漫 · 蓝', desktop: 'images/wallpapers/wp2-desktop.jpg', mobile: 'images/wallpapers/wp2-mobile.jpg' },
+  { id: 3, name: '动漫 · 梦', desktop: 'images/wallpapers/wp3-desktop.jpg', mobile: 'images/wallpapers/wp3-mobile.jpg' }
+];
+
+let currentWallpaper = 1;
+
+function getWallpaperUrl(id) {
+  const wp = WALLPAPERS.find(w => w.id === id) || WALLPAPERS[0];
+  const isMobile = window.innerWidth <= 768;
+  return isMobile ? wp.mobile : wp.desktop;
+}
+
+function switchWallpaper(id) {
+  currentWallpaper = id;
+  const bg = document.getElementById('wallpaperBg');
+  if (bg) {
+    bg.style.opacity = '0';
+    setTimeout(() => {
+      bg.style.backgroundImage = `url('${getWallpaperUrl(id)}')`;
+      bg.style.opacity = '1';
+    }, 300);
+  }
+  // 更新卡片状态
+  document.querySelectorAll('.wallpaper-card').forEach(card => {
+    card.classList.toggle('active', parseInt(card.dataset.id) === id);
+  });
+  // 保存选择
+  try { localStorage.setItem('jx_wallpaper', id); } catch(e) {}
+  // 提示
+  const toast = document.getElementById('toast');
+  if (toast) {
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1500);
+  }
+}
+
+function init() {
+  // 读取保存的选择
+  try { currentWallpaper = parseInt(localStorage.getItem('jx_wallpaper')) || 1; } catch(e) {}
+  
+  // 设置背景
+  const bg = document.getElementById('wallpaperBg');
+  if (bg) {
+    bg.style.backgroundImage = `url('${getWallpaperUrl(currentWallpaper)}')`;
+    bg.style.opacity = '1';
+  }
+  
+  // 生成壁纸卡片
+  const grid = document.getElementById('wallpaperGrid');
+  if (grid) {
+    WALLPAPERS.forEach(wp => {
+      const card = document.createElement('div');
+      card.className = 'wallpaper-card' + (wp.id === currentWallpaper ? ' active' : '');
+      card.dataset.id = wp.id;
+      card.innerHTML = `
+        <div class="wallpaper-preview" style="background-image:url('${wp.desktop}')"></div>
+        <div class="wallpaper-info">
+          <span class="wallpaper-name">${wp.name}</span>
+          <button class="wallpaper-use-btn">${wp.id === currentWallpaper ? '使用中' : '使用'}</button>
+        </div>
+      `;
+      card.addEventListener('click', () => switchWallpaper(wp.id));
+      grid.appendChild(card);
+    });
+  }
+  
+  // 窗口大小变化时切换桌面/手机版
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const bgEl = document.getElementById('wallpaperBg');
+      if (bgEl) bgEl.style.backgroundImage = `url('${getWallpaperUrl(currentWallpaper)}')`;
+    }, 300);
+  });
+}
+
+init();
+</script>
+
+</body>
+</html>
