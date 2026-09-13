@@ -2900,14 +2900,28 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     });
   }
 
-  // ========== 樱花飘落效果 ==========
+  // ========== 樱花飘落效果（增强版） ==========
   function initSakura() {
     const canvas = document.getElementById('sakuraCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let petals = [];
-    const PETAL_COUNT = window.innerWidth < 768 ? 2 : 3;
+    let burstPetals = []; // 点击爆发的花瓣
+    let trailPetals = []; // 鼠标跟随花瓣
+    const isMobile = window.innerWidth < 768;
+    const PETAL_COUNT = isMobile ? 8 : 18; // 樱花数量大幅增加
     let animId = null;
+    let mouseX = -100, mouseY = -100;
+    let lastTrailTime = 0;
+
+    // 樱花配色（多种粉色）
+    const PETAL_COLORS = [
+      'rgba(255, 182, 193, ALPHA)',  // 浅粉
+      'rgba(255, 154, 178, ALPHA)',  // 樱花粉
+      'rgba(255, 105, 180, ALPHA)',  // 深粉
+      'rgba(255, 228, 225, ALPHA)',  // 极浅粉
+      'rgba(255, 192, 203, ALPHA)',  // 粉红
+    ];
 
     function resize() {
       canvas.width = window.innerWidth;
@@ -2916,72 +2930,246 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     resize();
     window.addEventListener('resize', resize);
 
-    // 绘制樱花花瓣（简化版，提升性能）
+    // 绘制樱花花瓣（细致版：真实樱花形状+脉络+渐变）
     function drawPetal(p) {
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(p.rotation);
       ctx.globalAlpha = p.opacity;
-      ctx.fillStyle = 'rgba(255, 154, 178, 0.7)';
+      
+      const sz = p.size;
+      const color = p.color.replace('ALPHA', '1');
+      
+      // 1. 花瓣主体（樱花花瓣形状：顶端有缺口）
       ctx.beginPath();
-      ctx.ellipse(0, 0, p.size, p.size * 0.6, 0, 0, Math.PI * 2);
+      ctx.moveTo(0, -sz * 0.8);
+      ctx.bezierCurveTo(sz * 0.5, -sz * 0.7, sz * 0.6, -sz * 0.1, sz * 0.4, sz * 0.3);
+      ctx.bezierCurveTo(sz * 0.3, sz * 0.6, sz * 0.1, sz * 0.75, 0, sz * 0.7);
+      ctx.bezierCurveTo(-sz * 0.1, sz * 0.75, -sz * 0.3, sz * 0.6, -sz * 0.4, sz * 0.3);
+      ctx.bezierCurveTo(-sz * 0.6, -sz * 0.1, -sz * 0.5, -sz * 0.7, 0, -sz * 0.8);
+      // 顶端心形缺口
+      ctx.moveTo(0, -sz * 0.8);
+      ctx.quadraticCurveTo(sz * 0.08, -sz * 0.55, 0, -sz * 0.45);
+      ctx.quadraticCurveTo(-sz * 0.08, -sz * 0.55, 0, -sz * 0.8);
+      
+      // 径向渐变填充（中心深，边缘浅）
+      const grad = ctx.createRadialGradient(0, sz * 0.1, 0, 0, sz * 0.1, sz);
+      grad.addColorStop(0, color);
+      grad.addColorStop(0.6, color);
+      grad.addColorStop(1, 'rgba(255,255,255,0.3)');
+      ctx.fillStyle = grad;
       ctx.fill();
+      
+      // 2. 花瓣脉络（3条主脉）
+      ctx.globalAlpha = p.opacity * 0.35;
+      ctx.strokeStyle = 'rgba(200, 80, 120, 0.6)';
+      ctx.lineWidth = sz * 0.06;
+      ctx.lineCap = 'round';
+      
+      // 主脉（中心）
+      ctx.beginPath();
+      ctx.moveTo(0, -sz * 0.4);
+      ctx.quadraticCurveTo(0, sz * 0.1, 0, sz * 0.55);
+      ctx.stroke();
+      
+      // 左侧脉
+      ctx.beginPath();
+      ctx.moveTo(0, -sz * 0.2);
+      ctx.quadraticCurveTo(-sz * 0.2, sz * 0.1, -sz * 0.3, sz * 0.4);
+      ctx.stroke();
+      
+      // 右侧脉
+      ctx.beginPath();
+      ctx.moveTo(0, -sz * 0.2);
+      ctx.quadraticCurveTo(sz * 0.2, sz * 0.1, sz * 0.3, sz * 0.4);
+      ctx.stroke();
+      
+      // 3. 花瓣边缘细描边
+      ctx.globalAlpha = p.opacity * 0.25;
+      ctx.strokeStyle = 'rgba(180, 60, 100, 0.5)';
+      ctx.lineWidth = sz * 0.04;
+      ctx.beginPath();
+      ctx.moveTo(0, -sz * 0.8);
+      ctx.bezierCurveTo(sz * 0.5, -sz * 0.7, sz * 0.6, -sz * 0.1, sz * 0.4, sz * 0.3);
+      ctx.bezierCurveTo(sz * 0.3, sz * 0.6, sz * 0.1, sz * 0.75, 0, sz * 0.7);
+      ctx.bezierCurveTo(-sz * 0.1, sz * 0.75, -sz * 0.3, sz * 0.6, -sz * 0.4, sz * 0.3);
+      ctx.bezierCurveTo(-sz * 0.6, -sz * 0.1, -sz * 0.5, -sz * 0.7, 0, -sz * 0.8);
+      ctx.stroke();
+      
+      // 4. 中心高光点
+      ctx.globalAlpha = p.opacity * 0.5;
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath();
+      ctx.ellipse(-sz * 0.15, -sz * 0.05, sz * 0.18, sz * 0.1, -0.3, 0, Math.PI * 2);
+      ctx.fill();
+      
       ctx.restore();
     }
 
     class Petal {
-      constructor() { this.reset(true); }
-      reset(initial) {
-        this.x = Math.random() * canvas.width;
-        this.y = initial ? Math.random() * canvas.height : -20;
-        this.size = Math.random() * 8 + 6;
-        this.speedY = Math.random() * 1 + 0.5;
-        this.speedX = Math.random() * 1.5 - 0.75;
-        this.swaySpeed = Math.random() * 0.02 + 0.01;
-        this.swayAmount = Math.random() * 50 + 30;
+      constructor(isBurst, x, y) {
+        this.isBurst = isBurst || false;
+        this.reset(true, x, y);
+      }
+      reset(initial, x, y) {
+        if (this.isBurst) {
+          // 爆发花瓣：从点击点向外飞（带拖尾）
+          this.x = x;
+          this.y = y;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 7 + 3;
+          this.vx = Math.cos(angle) * speed;
+          this.vy = Math.sin(angle) * speed - 3;
+          this.life = 1.0;
+          this.decay = Math.random() * 0.018 + 0.008;
+          this.size = Math.random() * 7 + 4;
+          this.trail = []; // 拖尾记录
+          this.glow = Math.random() * 0.5 + 0.5; // 发光强度
+        } else {
+          this.x = x !== undefined ? x : Math.random() * canvas.width;
+          this.y = y !== undefined ? y : (initial ? Math.random() * canvas.height : -20);
+          this.size = Math.random() * 10 + 4;
+          this.speedY = Math.random() * 1.5 + 0.8;
+          this.speedX = Math.random() * 2 - 1;
+          this.vx = 0; this.vy = 0;
+          this.life = 1; this.decay = 0;
+        }
+        this.swaySpeed = Math.random() * 0.03 + 0.015;
+        this.swayAmount = Math.random() * 60 + 20;
         this.swayOffset = Math.random() * Math.PI * 2;
         this.rotation = Math.random() * Math.PI * 2;
-        this.rotationSpeed = (Math.random() - 0.5) * 0.02;
-        this.opacity = Math.random() * 0.5 + 0.4;
-        this.time = 0;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+        this.opacity = Math.random() * 0.4 + 0.5;
+        this.color = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)];
+        this.time = Math.random() * 100;
       }
       update() {
         this.time += this.swaySpeed;
-        this.y += this.speedY;
-        this.x += this.speedX + Math.sin(this.time) * 0.8;
-        this.rotation += this.rotationSpeed;
-        if (this.y > canvas.height + 20 || this.x < -20 || this.x > canvas.width + 20) {
-          this.reset(false);
+        if (this.isBurst) {
+          // 爆发花瓣：抛物线运动 + 拖尾 + 发光
+          this.trail.push({x: this.x, y: this.y, life: this.life});
+          if (this.trail.length > 8) this.trail.shift();
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vy += 0.12; // 重力
+          this.vx *= 0.985; // 空气阻力
+          this.life -= this.decay;
+          this.opacity = this.life;
+          this.rotation += this.rotationSpeed * 1.5;
+          return this.life > 0;
+        } else {
+          this.y += this.speedY;
+          this.x += this.speedX + Math.sin(this.time) * 1.2;
+          this.rotation += this.rotationSpeed;
+          if (this.y > canvas.height + 20 || this.x < -20 || this.x > canvas.width + 20) {
+            this.reset(false);
+          }
+          return true;
         }
       }
     }
 
+    // 初始化飘落樱花
     for (let i = 0; i < PETAL_COUNT; i++) {
-      petals.push(new Petal());
+      petals.push(new Petal(false));
     }
 
-    let sakuraLastTime = 0;
-    const SAKURA_FPS = 240;
-    const sakuraInterval = 1000 / SAKURA_FPS;
-
-    function animate(timestamp) {
-      if (!timestamp) timestamp = 0;
-      const delta = timestamp - sakuraLastTime;
-      if (delta < sakuraInterval) {
-        animId = requestAnimationFrame(animate);
-        return;
+    // 鼠标跟随：留下樱花轨迹
+    canvas.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      const now = Date.now();
+      if (now - lastTrailTime > 50) { // 每50ms生成一片轨迹花瓣
+        lastTrailTime = now;
+        const trail = new Petal(false, mouseX, mouseY);
+        trail.speedY = Math.random() * 0.5 + 0.2;
+        trail.speedX = (Math.random() - 0.5) * 0.5;
+        trail.opacity = 0.6;
+        trail.size = Math.random() * 5 + 3;
+        trail.isTrail = true;
+        trail.life = 1.0;
+        trail.decay = 0.015;
+        trailPetals.push(trail);
+        if (trailPetals.length > 30) trailPetals.shift();
       }
-      sakuraLastTime = timestamp - (delta % sakuraInterval);
+    });
+
+    // 点击爆发樱花
+    canvas.addEventListener('click', (e) => {
+      const burstCount = isMobile ? 8 : 15;
+      for (let i = 0; i < burstCount; i++) {
+        burstPetals.push(new Petal(true, e.clientX, e.clientY));
+      }
+    });
+
+    // 触摸支持（移动端）
+    canvas.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      const burstCount = 8;
+      for (let i = 0; i < burstCount; i++) {
+        burstPetals.push(new Petal(true, touch.clientX, touch.clientY));
+      }
+    });
+
+    function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // 绘制飘落樱花
       petals.forEach(p => {
         p.update();
         drawPetal(p);
       });
+      
+      // 绘制鼠标轨迹花瓣（带微光）
+      trailPetals = trailPetals.filter(p => {
+        p.update();
+        p.life -= p.decay;
+        p.opacity = p.life * 0.8;
+        if (p.life > 0) {
+          ctx.save();
+          ctx.shadowColor = 'rgba(255, 182, 193, 0.6)';
+          ctx.shadowBlur = p.size * 1.5;
+          drawPetal(p);
+          ctx.restore();
+          return true;
+        }
+        return false;
+      });
+      
+      // 绘制点击爆发花瓣（带拖尾和发光）
+      burstPetals = burstPetals.filter(p => {
+        const alive = p.update();
+        if (alive) {
+          // 绘制拖尾
+          if (p.trail && p.trail.length > 1) {
+            ctx.save();
+            ctx.globalAlpha = p.opacity * 0.3;
+            ctx.strokeStyle = p.color.replace('ALPHA', '0.5');
+            ctx.lineWidth = p.size * 0.4;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(p.trail[0].x, p.trail[0].y);
+            for (let i = 1; i < p.trail.length; i++) {
+              ctx.lineTo(p.trail[i].x, p.trail[i].y);
+            }
+            ctx.stroke();
+            ctx.restore();
+          }
+          // 发光效果
+          ctx.save();
+          ctx.shadowColor = p.color.replace('ALPHA', '0.8');
+          ctx.shadowBlur = p.size * 2 * p.glow * p.life;
+          drawPetal(p);
+          ctx.restore();
+        }
+        return alive;
+      });
+      
       animId = requestAnimationFrame(animate);
     }
     animate();
 
-    // 页面不可见时暂停，节省性能
+    // 页面不可见时暂停
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         if (animId) cancelAnimationFrame(animId);
