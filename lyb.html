@@ -299,7 +299,7 @@ body::before {
       <label>留言内容</label>
       <textarea id="msgContent" placeholder="写下你想说的话..." maxlength="500"></textarea>
     </div>
-    <button class="submit-btn" onclick="submitMsg()">发表留言</button>
+    <div style="display:flex;gap:10px;"><button class="submit-btn" onclick="submitMsg()" style="flex:1;">发表留言</button><button class="submit-btn" onclick="testConnection()" style="flex:0 0 auto;padding:14px 20px;background:linear-gradient(135deg,#5ab0ff,#3a8fdb);">测试连接</button></div>
   </div>
 
   <!-- 留言列表 -->
@@ -319,6 +319,27 @@ body::before {
 const SUPABASE_URL = 'https://ahednjzbiaxpsrugcooj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_GkuNEv8WpDYXNPggXy1P0Q__DNOp6hr';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+// 测试Supabase连接
+async function testConnection() {
+  showToast('正在测试连接...');
+  const startTime = Date.now();
+  try {
+    const { data, error } = await supabase
+      .from('messages')
+      .select('id')
+      .limit(1);
+    const elapsed = Date.now() - startTime;
+    if (error) throw error;
+    showToast('✅ 连接正常！延迟 ' + elapsed + 'ms');
+  } catch(e) {
+    const elapsed = Date.now() - startTime;
+    const errMsg = e.message || String(e);
+    showToast('❌ 连接失败（' + elapsed + 'ms）：' + errMsg);
+    alert('连接失败！\n\n错误：' + errMsg + '\n耗时：' + elapsed + 'ms\n\n可能原因：\n1. Supabase服务器在国内访问不稳定\n2. 表名或RLS策略错误\n3. API密钥错误');
+  }
+}
 
 // 获取当前登录用户
 function getCurrentUser() {
@@ -346,7 +367,7 @@ async function init() {
   }
   
   await loadMsgs();
-  subscribeRealtime();
+  // 实时订阅已禁用（国内WebSocket连接不稳定）
 }
 
 // 从Supabase加载留言
@@ -365,7 +386,8 @@ async function loadMsgs() {
     renderMsgs(data || []);
   } catch(e) {
     console.error('加载留言失败:', e);
-    list.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>加载失败，请刷新页面重试</p></div>';
+    const errMsg = e.message || String(e);
+    list.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>加载失败</p><p style="font-size:12px;color:#ff6b9d;margin-top:8px;word-break:break-all;">' + errMsg + '</p></div>';
   }
 }
 
@@ -403,7 +425,15 @@ async function submitMsg() {
     await loadMsgs();
   } catch(e) {
     console.error('留言失败:', e);
-    showToast('留言失败：' + e.message);
+    const errMsg = e.message || String(e);
+    showToast('留言失败：' + errMsg);
+    // 同时在页面显示错误
+    const list = document.getElementById('msgList');
+    const errDiv = document.createElement('div');
+    errDiv.style.cssText = 'background:rgba(255,107,157,0.1);border:1px solid rgba(255,107,157,0.3);border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;color:#e0527f;word-break:break-all;';
+    errDiv.innerHTML = '<strong>❌ 错误详情：</strong><br>' + errMsg + '<br><br><small>如果是网络超时，说明Supabase服务器在国内访问不稳定，建议换用国内数据库</small>';
+    list.parentNode.insertBefore(errDiv, list);
+    setTimeout(() => errDiv.remove(), 10000);
   } finally {
     btn.disabled = false;
     btn.textContent = '发表留言';

@@ -1,5 +1,6 @@
-User-agent: *
+﻿User-agent: *
 Allow: /
 Disallow: /admin.html
 
-Sitemap: https://jianxiu.ccwu.cc/sitemap.xml
+Sitemap: https://jianxiu.icu/sitemap.xml
+

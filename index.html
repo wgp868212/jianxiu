@@ -9,21 +9,21 @@
 <meta name="author" content="剑修哥">
 <meta name="robots" content="index, follow">
 <meta name="language" content="zh-CN">
-<link rel="canonical" href="https://jianxiu.ccwu.cc/">
+<link rel="canonical" href="https://jianxiu.icu/">
 
 <!-- Open Graph 社交媒体分享 -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="剑修哥 · B站UP主个人主页">
 <meta property="og:description" content="B站游戏UP主，专注我的世界材质包、动态模糊光影、PVP技巧与软件下载教程。">
-<meta property="og:url" content="https://jianxiu.ccwu.cc/">
-<meta property="og:image" content="https://jianxiu.ccwu.cc/images/avatar.jpg">
+<meta property="og:url" content="https://jianxiu.icu/">
+<meta property="og:image" content="https://jianxiu.icu/images/avatar.jpg">
 <meta property="og:site_name" content="剑修哥">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="剑修哥 · B站UP主个人主页">
 <meta name="twitter:description" content="B站游戏UP主，专注我的世界材质包、动态模糊光影、PVP技巧与软件下载教程。">
-<meta name="twitter:image" content="https://jianxiu.ccwu.cc/images/avatar.jpg">
+<meta name="twitter:image" content="https://jianxiu.icu/images/avatar.jpg">
 
 <link rel="icon" type="image/jpeg" href="images/avatar.jpg">
 <link rel="apple-touch-icon" href="images/avatar.jpg">
@@ -1771,10 +1771,103 @@ body { background: var(--paper-base); }
   .nav-auth { display: none; }
 }
 
+
+/* ========== 深色模式 ========== */
+[data-theme="dark"] {
+  --ink-deep: #e8eaf0; --ink-dark: #c8cad4; --ink-mid: #989cae;
+  --ink-light: #787c8e; --ink-faint: #585c6e;
+  --paper-light: #1a1c28; --paper-base: #0f1118;
+  --paper-warm: #161824; --paper-deep: #1e2030;
+  --glass-bg: rgba(30,32,48,0.6);
+  --glass-bg-strong: rgba(30,32,48,0.75);
+  --glass-border: rgba(255,255,255,0.1);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+[data-theme="dark"] body { background: var(--paper-base); color: var(--ink-dark); }
+[data-theme="dark"] .wallpaper-overlay { background: rgba(0,0,0,0.5); }
+[data-theme="dark"] .bg-layer::before { opacity: 0.3; }
+[data-theme="dark"] .page-wrapper,
+[data-theme="dark"] .glass-card,
+[data-theme="dark"] .form-section,
+[data-theme="dark"] .msg-form,
+[data-theme="dark"] .msg-item,
+[data-theme="dark"] .video-card,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .download-card {
+  background: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+}
+[data-theme="dark"] input, [data-theme="dark"] textarea, [data-theme="dark"] select {
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: var(--ink-dark) !important;
+}
+[data-theme="dark"] .top-nav, [data-theme="dark"] .admin-header {
+  background: rgba(20,22,35,0.6) !important;
+  border-bottom-color: rgba(255,255,255,0.1) !important;
+}
+[data-theme="dark"] .nav-links a { color: var(--ink-mid); }
+[data-theme="dark"] .nav-links a:hover, [data-theme="dark"] .nav-links a.active { color: var(--cinnabar); }
+[data-theme="dark"] .fps-counter { background: rgba(20,22,35,0.7); color: var(--ink-mid); }
+[data-theme="dark"] .toast { background: rgba(30,32,48,0.9); }
+[data-theme="dark"] .empty-state { color: var(--ink-faint); }
+[data-theme="dark"] .login-box, [data-theme="dark"] .admin-sidebar {
+  background: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+}
+[data-theme="dark"] .admin-sidebar a { color: var(--ink-mid); }
+[data-theme="dark"] .admin-sidebar a:hover, [data-theme="dark"] .admin-sidebar a.active {
+  color: var(--cinnabar); background: rgba(255,107,157,0.1);
+}
+[data-theme="dark"] .btn { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); color: var(--ink-dark); }
+[data-theme="dark"] .btn:hover { border-color: var(--cinnabar); color: var(--cinnabar); }
+[data-theme="dark"] img { filter: brightness(0.9); }
+[data-theme="dark"] .wallpaper-bg { filter: brightness(0.7); }
+
+/* 深色模式切换按钮 */
+.theme-toggle {
+  position: fixed; top: 16px; right: 16px; z-index: 9999;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s; box-shadow: var(--glass-shadow);
+}
+.theme-toggle:hover { transform: scale(1.1); }
+@media (max-width: 768px) {
+  .theme-toggle { top: 12px; right: 12px; width: 36px; height: 36px; font-size: 16px; }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "剑修哥",
+  "url": "https://jianxiu.icu/",
+  "image": "https://jianxiu.icu/images/avatar.jpg",
+  "jobTitle": "B站游戏UP主",
+  "description": "B站游戏UP主（UID:36518358），专注我的世界材质包、动态模糊光影、PVP技巧与软件下载教程。",
+  "sameAs": [
+    "https://space.bilibili.com/36518358"
+  ],
+  "knowsAbout": ["我的世界", "材质包", "动态模糊", "光影", "PVP", "布吉岛", "游戏教程"],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "泉州",
+    "addressCountry": "CN"
+  }
+}
+</script>
+
 </head>
 <body>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换深色/浅色模式">🌙</button>
+
 
 <!-- 开场动画 -->
 <div class="intro-overlay" id="introOverlay">
@@ -2286,6 +2379,22 @@ body { background: var(--paper-base); }
 </div>
 
 <script>
+
+  // ========== 深色模式切换 ==========
+  function getTheme() {
+    return localStorage.getItem('jx_theme') || 'light';
+  }
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('jx_theme', theme);
+    document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+  function toggleTheme() {
+    const current = getTheme();
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+  // 初始化主题
+  applyTheme(getTheme());
 
 // ===== EmailJS 配置（注册后填入你的ID） =====
 // 注册地址：https://www.emailjs.com/
@@ -2852,7 +2961,7 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     }
 
     let sakuraLastTime = 0;
-    const SAKURA_FPS = 8;
+    const SAKURA_FPS = 240;
     const sakuraInterval = 1000 / SAKURA_FPS;
 
     function animate(timestamp) {
