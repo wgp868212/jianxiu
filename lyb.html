@@ -257,6 +257,7 @@ body::before {
   .msg-delete { opacity: 1; }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -314,6 +315,11 @@ body::before {
 <div class="toast" id="toast"></div>
 
 <script>
+// Supabase 配置
+const SUPABASE_URL = 'https://ahednjzbiaxpsrugcooj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GkuNEv8WpDYXNPggXy1P0Q__DNOp6hr';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 // 获取当前登录用户
 function getCurrentUser() {
   try {
@@ -322,7 +328,7 @@ function getCurrentUser() {
 }
 
 // 初始化页面
-function init() {
+async function init() {
   const user = getCurrentUser();
   const nameInput = document.getElementById('msgName');
   const loginHint = document.getElementById('loginHint');
@@ -333,16 +339,32 @@ function init() {
     loginHint.innerHTML = '✅ 已登录为 <strong>' + user.email + '</strong>，留言将显示「登录用户」标识';
   }
   
-  // 检查是否从首页登录跳转回来
-  if (localStorage.getItem('lyb_redirect')) {
-    localStorage.removeItem('lyb_redirect');
-  }
+  await loadMsgs();
+  subscribeRealtime();
+}
+
+// 从Supabase加载留言
+async function loadMsgs() {
+  const list = document.getElementById('msgList');
+  list.innerHTML = '<div class="empty-state"><div class="icon">⏳</div><p>加载中...</p></div>';
   
-  renderMsgs();
+  try {
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(100);
+    
+    if (error) throw error;
+    renderMsgs(data || []);
+  } catch(e) {
+    console.error('加载留言失败:', e);
+    list.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>加载失败，请刷新页面重试</p></div>';
+  }
 }
 
 // 提交留言
-function submitMsg() {
+async function submitMsg() {
   const nameInput = document.getElementById('msgName');
   const contentInput = document.getElementById('msgContent');
   const user = getCurrentUser();
@@ -353,37 +375,58 @@ function submitMsg() {
   if (!name) { showToast('请输入昵称'); return; }
   if (!content) { showToast('请输入留言内容'); return; }
   
-  const msgs = getMsgs();
-  const newMsg = {
-    id: Date.now(),
-    name: name,
-    content: content,
-    time: new Date().toLocaleString('zh-CN'),
-    timestamp: Date.now(),
-    isLogin: !!user,
-    userEmail: user ? user.email : null
-  };
+  const btn = document.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.textContent = '发送中...';
   
-  msgs.unshift(newMsg);
-  localStorage.setItem('lyb_messages', JSON.stringify(msgs));
-  
-  contentInput.value = '';
-  if (!user) nameInput.value = '';
-  
-  renderMsgs();
-  showToast('留言成功！');
+  try {
+    const { error } = await supabase
+      .from('messages')
+      .insert([{
+        name: name,
+        content: content,
+        is_login: !!user,
+        user_email: user ? user.email : null
+      }]);
+    
+    if (error) throw error;
+    
+    contentInput.value = '';
+    if (!user) nameInput.value = '';
+    showToast('留言成功！');
+    await loadMsgs();
+  } catch(e) {
+    console.error('留言失败:', e);
+    showToast('留言失败：' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '发表留言';
+  }
 }
 
-// 获取留言列表
-function getMsgs() {
+// 删除留言
+async function deleteMsg(id) {
+  if (!confirm('确定删除这条留言吗？')) return;
+  const user = getCurrentUser();
+  if (!user) { showToast('请先登录再删除'); return; }
+  
   try {
-    return JSON.parse(localStorage.getItem('lyb_messages') || '[]');
-  } catch(e) { return []; }
+    const { error } = await supabase
+      .from('messages')
+      .delete()
+      .eq('id', id)
+      .eq('user_email', user.email);
+    
+    if (error) throw error;
+    showToast('已删除');
+    await loadMsgs();
+  } catch(e) {
+    showToast('删除失败：只能删除自己的留言');
+  }
 }
 
 // 渲染留言
-function renderMsgs() {
-  const msgs = getMsgs();
+function renderMsgs(msgs) {
   const list = document.getElementById('msgList');
   const countEl = document.getElementById('msgCount');
   const user = getCurrentUser();
@@ -397,13 +440,14 @@ function renderMsgs() {
   
   list.innerHTML = msgs.map(function(msg) {
     const initial = msg.name.charAt(0).toUpperCase();
-    const canDelete = user && user.email === msg.userEmail;
-    const badge = msg.isLogin 
+    const canDelete = user && user.email === msg.user_email;
+    const badge = msg.is_login 
       ? '<span class="msg-badge">登录用户</span>'
       : '<span class="msg-anon-badge">匿名</span>';
     const deleteBtn = canDelete 
       ? '<button class="msg-delete" onclick="deleteMsg(' + msg.id + ')" title="删除">🗑</button>'
       : '';
+    const time = new Date(msg.created_at).toLocaleString('zh-CN');
     
     return '<div class="msg-item">'
       + deleteBtn
@@ -413,21 +457,26 @@ function renderMsgs() {
       + '<span class="msg-name">' + escapeHtml(msg.name) + '</span>'
       + badge
       + '</div>'
-      + '<span class="msg-time">' + msg.time + '</span>'
+      + '<span class="msg-time">' + time + '</span>'
       + '</div>'
       + '<div class="msg-content">' + escapeHtml(msg.content) + '</div>'
       + '</div>';
   }).join('');
 }
 
-// 删除留言
-function deleteMsg(id) {
-  if (!confirm('确定删除这条留言吗？')) return;
-  let msgs = getMsgs();
-  msgs = msgs.filter(function(m) { return m.id !== id; });
-  localStorage.setItem('lyb_messages', JSON.stringify(msgs));
-  renderMsgs();
-  showToast('已删除');
+// 实时监听新留言
+function subscribeRealtime() {
+  supabase
+    .channel('messages-channel')
+    .on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'messages'
+    }, function(payload) {
+      // 有新留言时，静默刷新列表
+      loadMsgs();
+    })
+    .subscribe();
 }
 
 // HTML转义
