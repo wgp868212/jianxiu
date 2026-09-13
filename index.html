@@ -61,6 +61,7 @@ body {
   font-family: var(--font-serif); color: var(--ink-dark);
   min-height: 100vh;
   overflow-x: hidden; position: relative; line-height: 1.7;
+  user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
   
   background-size: cover;
   background-position: center;
@@ -1262,12 +1263,23 @@ body { background: var(--paper-base); }
   position: relative; z-index: 2;
   max-width: 1140px; margin: 90px auto 40px;
   padding: 40px 36px;
-  background: rgba(255,255,255,0.35);
-  -webkit-backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255,255,255,0.5);
+  background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.25) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.6);
   border-radius: 28px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+  box-shadow: 
+    0 20px 60px rgba(0,0,0,0.12),
+    0 8px 24px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    inset 0 -1px 0 rgba(0,0,0,0.05),
+    0 0 40px rgba(255,107,157,0.08);
+}
+.page-wrapper::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+  border-radius: 28px 28px 0 0;
 }
 
 /* 顶部双栏 */
@@ -1280,15 +1292,33 @@ body { background: var(--paper-base); }
 
 /* 通用毛玻璃卡片 */
 .glass-card {
-  background: rgba(255,255,255,0.45);
-  -webkit-border: 1px solid rgba(255,255,255,0.55);
+  background: linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.3) 100%);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.6);
   border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  box-shadow: 
+    0 4px 20px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    inset 0 -1px 0 rgba(0,0,0,0.03);
   padding: 28px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.glass-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
 }
 .glass-card:hover {
-  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 12px 40px rgba(0,0,0,0.12),
+    0 4px 12px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    0 0 30px rgba(255,107,157,0.15);
+  border-color: rgba(255,107,157,0.4);
 }
 
 /* 个人信息卡 */
@@ -1840,6 +1870,78 @@ body { background: var(--paper-base); }
   .theme-toggle { top: 12px; right: 12px; width: 36px; height: 36px; font-size: 16px; }
 }
 
+
+/* 输入框允许选择文字 */
+input, textarea, [contenteditable] {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+
+/* ========== 荧光特效 ========== */
+.glow-pink {
+  box-shadow: 0 0 20px rgba(255,107,157,0.4), 0 0 40px rgba(255,107,157,0.2);
+}
+.glow-blue {
+  box-shadow: 0 0 20px rgba(90,176,255,0.4), 0 0 40px rgba(90,176,255,0.2);
+}
+.glow-gold {
+  box-shadow: 0 0 20px rgba(255,184,77,0.4), 0 0 40px rgba(255,184,77,0.2);
+}
+
+/* 荧光文字 */
+.text-glow-pink {
+  text-shadow: 0 0 10px rgba(255,107,157,0.6), 0 0 20px rgba(255,107,157,0.3);
+}
+.text-glow-blue {
+  text-shadow: 0 0 10px rgba(90,176,255,0.6), 0 0 20px rgba(90,176,255,0.3);
+}
+
+/* 按钮荧光hover */
+.btn-glow {
+  position: relative;
+  transition: all 0.3s ease;
+}
+.btn-glow:hover {
+  box-shadow: 
+    0 0 20px rgba(255,107,157,0.5),
+    0 0 40px rgba(255,107,157,0.25),
+    0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+/* 呼吸荧光动画 */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(255,107,157,0.3), 0 0 30px rgba(255,107,157,0.1); }
+  50% { box-shadow: 0 0 25px rgba(255,107,157,0.5), 0 0 50px rgba(255,107,157,0.2); }
+}
+.glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* 边框流动荧光 */
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(255,107,157,0.3); }
+  50% { border-color: rgba(90,176,255,0.5); }
+}
+.border-glow {
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+/* 毛玻璃细致阴影工具类 */
+.glass-deep {
+  box-shadow: 
+    0 8px 32px rgba(0,0,0,0.12),
+    0 2px 8px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    inset 0 -1px 0 rgba(0,0,0,0.05);
+}
+.glass-soft {
+  box-shadow: 
+    0 4px 16px rgba(0,0,0,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
@@ -2379,6 +2481,54 @@ body { background: var(--paper-base); }
 </div>
 
 <script>
+
+  // ========== 禁用开发者工具和右键 ==========
+  (function() {
+    // 禁用右键菜单
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      return false;
+    });
+    
+    // 禁用F12、Ctrl+Shift+I、Ctrl+Shift+J、Ctrl+U、Ctrl+S
+    document.addEventListener('keydown', function(e) {
+      // F12
+      if (e.keyCode === 123) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+Shift+I / J / C
+      if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+U (查看源码)
+      if (e.ctrlKey && e.keyCode === 85) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+S (保存)
+      if (e.ctrlKey && e.keyCode === 83) {
+        e.preventDefault();
+        return false;
+      }
+    });
+    
+    // 检测开发者工具是否打开（通过窗口大小差检测）
+    let devtoolsOpen = false;
+    setInterval(function() {
+      const widthThreshold = window.outerWidth - window.innerWidth > 160;
+      const heightThreshold = window.outerHeight - window.innerHeight > 160;
+      if (widthThreshold || heightThreshold) {
+        if (!devtoolsOpen) {
+          devtoolsOpen = true;
+          // 开发者工具打开时可以做一些处理，比如显示提示
+        }
+      } else {
+        devtoolsOpen = false;
+      }
+    }, 1000);
+  })();
 
   // ========== 深色模式切换 ==========
   function getTheme() {
