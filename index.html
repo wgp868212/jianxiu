@@ -61,7 +61,7 @@ body {
   font-family: var(--font-serif); color: var(--ink-dark);
   min-height: 100vh;
   overflow-x: hidden; position: relative; line-height: 1.7;
-  background-attachment: fixed;
+  
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -116,8 +116,8 @@ body { background: var(--paper-base); }
   display: flex; align-items: center; justify-content: center;
   padding: 14px 32px;
   background: rgba(255,255,255,0.4);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border-bottom: 1px solid rgba(255,255,255,0.5);
   box-shadow: 0 4px 30px rgba(0,0,0,0.08);
 }
@@ -277,7 +277,7 @@ body { background: var(--paper-base); }
 .medal-item {
   display: flex; align-items: center; gap: 10px; padding: 8px 18px;
   background: rgba(255,255,255,0.6); border: 1px solid var(--paper-deep);
-  border-radius: 24px; backdrop-filter: blur(4px); transition: all 0.3s ease;
+  border-radius: 24px; transition: all 0.3s ease;
 }
 .medal-item:hover {
   transform: translateY(-2px); box-shadow: 0 4px 16px rgba(26,22,19,0.1);
@@ -299,7 +299,7 @@ body { background: var(--paper-base); }
 
 .stats-frame {
   position: relative; background: rgba(255,255,255,0.4);
-  backdrop-filter: blur(5px); border: 1px solid var(--paper-deep);
+  border: 1px solid var(--paper-deep);
   padding: 48px 32px; border-radius: 4px;
 }
 .stats-corner {
@@ -359,8 +359,7 @@ body { background: var(--paper-base); }
   position: relative; width: 100%; max-width: 520px;
   background: linear-gradient(135deg, rgba(44,90,80,0.08) 0%, rgba(255,255,255,0.6) 50%, rgba(201,169,110,0.08) 100%);
   border: 1px solid var(--paper-deep); border-radius: 8px;
-  padding: 36px 32px 32px; backdrop-filter: blur(5px);
-  box-shadow: 0 8px 32px rgba(26,22,19,0.08); transition: all 0.4s ease;
+  padding: 36px 32px 32px; box-shadow: 0 8px 32px rgba(26,22,19,0.08); transition: all 0.4s ease;
 }
 .fan-card:hover {
   transform: translateY(-4px); box-shadow: 0 16px 48px rgba(26,22,19,0.12);
@@ -429,8 +428,7 @@ body { background: var(--paper-base); }
 }
 .video-card {
   background: rgba(255,255,255,0.5); border: 1px solid var(--paper-deep);
-  border-radius: 8px; overflow: hidden; backdrop-filter: blur(5px);
-  transition: all 0.4s ease; cursor: pointer; text-decoration: none;
+  border-radius: 8px; overflow: hidden; transition: all 0.4s ease; cursor: pointer; text-decoration: none;
   display: flex; flex-direction: column;
 }
 .video-card:hover {
@@ -450,8 +448,7 @@ body { background: var(--paper-base); }
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: 56px; height: 56px; background: rgba(0,0,0,0.5); border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  transition: all 0.3s ease; backdrop-filter: blur(4px);
-}
+  transition: all 0.3s ease; }
 .video-card:hover .video-play-icon {
   background: var(--cinnabar); transform: translate(-50%, -50%) scale(1.1);
 }
@@ -485,7 +482,7 @@ body { background: var(--paper-base); }
 .download-section { margin: 60px 0; }
 .download-frame {
   position: relative; background: linear-gradient(135deg, rgba(61,122,110,0.06) 0%, rgba(255,255,255,0.5) 50%, rgba(201,169,110,0.06) 100%);
-  backdrop-filter: blur(5px); border: 1px solid var(--paper-deep);
+  border: 1px solid var(--paper-deep);
   padding: 40px 32px; border-radius: 8px;
 }
 .download-list {
@@ -542,7 +539,7 @@ body { background: var(--paper-base); }
 .reward-section { margin: 60px 0; }
 .reward-frame {
   position: relative; background: linear-gradient(135deg, rgba(184,52,46,0.05) 0%, rgba(255,255,255,0.5) 50%, rgba(201,169,110,0.05) 100%);
-  backdrop-filter: blur(5px); border: 1px solid var(--paper-deep);
+  border: 1px solid var(--paper-deep);
   padding: 40px 32px; border-radius: 8px; text-align: center;
 }
 .reward-desc {
@@ -586,8 +583,7 @@ body { background: var(--paper-base); }
 
 .reward-modal-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(26,22,19,0.7); backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center;
+  background: rgba(26,22,19,0.7); display: flex; align-items: center; justify-content: center;
   z-index: 2000; opacity: 0; visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
@@ -732,8 +728,7 @@ body { background: var(--paper-base); }
   .nav-menu {
     position: absolute; top: 100%; left: 0; right: 0;
     flex-direction: column; gap: 0;
-    background: rgba(245,239,230,0.98); backdrop-filter: blur(5px);
-    padding: 8px 0; border-bottom: 1px solid var(--paper-deep);
+    background: rgba(245,239,230,0.98); padding: 8px 0; border-bottom: 1px solid var(--paper-deep);
     transform: translateY(-10px); opacity: 0; visibility: hidden;
     transition: all 0.3s ease;
   }
@@ -779,8 +774,7 @@ body { background: var(--paper-base); }
    ============================================ */
 .download-modal-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(26,22,19,0.6); backdrop-filter: blur(4px);
-  z-index: 1000; display: flex; align-items: center; justify-content: center;
+  background: rgba(26,22,19,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center;
   opacity: 0; visibility: hidden; transition: all 0.3s ease;
 }
 .download-modal-overlay.show { opacity: 1; visibility: visible; }
@@ -1108,7 +1102,6 @@ body { background: var(--paper-base); }
   font-family: 'Consolas', 'Monaco', monospace; font-size: 12px;
   color: #a0d8a0; letter-spacing: 0.5px;
   pointer-events: none; user-select: none;
-  backdrop-filter: blur(4px);
   transition: color 0.3s;
 }
 .fps-counter.warn { color: #e0c060; }
@@ -1222,9 +1215,7 @@ body { background: var(--paper-base); }
   position: fixed; bottom: 24px; left: 24px; z-index: 90;
   display: flex; align-items: center; gap: 8px;
   background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.5);
+  -webkit-border: 1px solid rgba(255,255,255,0.5);
   border-radius: 50px; padding: 8px 12px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.12);
 }
@@ -1260,8 +1251,7 @@ body { background: var(--paper-base); }
 /* FPS显示器调整 */
 #fpsDisplay {
   background: rgba(255,255,255,0.6) !important;
-  backdrop-filter: blur(5px);
-}
+  }
 
 /* ============================================
    二次元毛玻璃首页风格
@@ -1273,8 +1263,8 @@ body { background: var(--paper-base); }
   max-width: 1140px; margin: 90px auto 40px;
   padding: 40px 36px;
   background: rgba(255,255,255,0.35);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: 1px solid rgba(255,255,255,0.5);
   border-radius: 28px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.1);
@@ -1291,17 +1281,14 @@ body { background: var(--paper-base); }
 /* 通用毛玻璃卡片 */
 .glass-card {
   background: rgba(255,255,255,0.45);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.55);
+  -webkit-border: 1px solid rgba(255,255,255,0.55);
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.06);
   padding: 28px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .glass-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
 
 /* 个人信息卡 */
@@ -1412,9 +1399,7 @@ body { background: var(--paper-base); }
 /* 状态横幅 */
 .status-banner {
   background: rgba(255,255,255,0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.5);
+  -webkit-border: 1px solid rgba(255,255,255,0.5);
   border-radius: 16px;
   padding: 16px 24px;
   margin-bottom: 20px;
@@ -1443,9 +1428,7 @@ body { background: var(--paper-base); }
 }
 .video-card-new {
   background: rgba(255,255,255,0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.6);
+  -webkit-border: 1px solid rgba(255,255,255,0.6);
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -1510,9 +1493,7 @@ body { background: var(--paper-base); }
 /* 底部状态栏 */
 .status-bar {
   background: rgba(255,255,255,0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.6);
+  -webkit-border: 1px solid rgba(255,255,255,0.6);
   border-radius: 16px;
   padding: 14px 24px;
   display: flex; align-items: center; justify-content: space-between;
@@ -1648,8 +1629,7 @@ body { background: var(--paper-base); }
   display: flex; align-items: center; justify-content: center;
   gap: 0; margin-top: 40px; padding: 28px 36px;
   background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.7);
+  -webkit-border: 1px solid rgba(255,255,255,0.7);
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(90,176,255,0.12);
   flex-wrap: wrap;
@@ -1725,14 +1705,12 @@ body { background: var(--paper-base); }
 /* ===== 登录弹窗 ===== */
 .login-modal-overlay {
   position: fixed; inset: 0; z-index: 10000;
-  background: rgba(0,0,0,0.4); backdrop-filter: blur(6px);
-  display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center;
 }
 .login-modal-overlay.show { display: flex; }
 .login-modal {
   position: relative; width: 380px; max-width: 90vw;
-  background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
-  border-radius: 20px; padding: 40px 32px 32px;
+  background: rgba(255,255,255,0.95); border-radius: 20px; padding: 40px 32px 32px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.2);
   animation: loginPop 0.3s ease;
 }
@@ -1872,6 +1850,7 @@ body { background: var(--paper-base); }
     <li><a href="#videos">视频</a></li>
     <li><a href="/Downloads">下载</a></li>
     <li><a href="/rz">日志</a></li>
+    <li><a href="/lyb">留言板</a></li>
     <li><a href="/wallpaper">壁纸</a></li>
     <li><a href="/ds">赞赏</a></li>
     <li><a href="/jr" style="color:#0099FF;">加入官方群</a></li>
@@ -2817,7 +2796,7 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let petals = [];
-    const PETAL_COUNT = window.innerWidth < 768 ? 3 : 5;
+    const PETAL_COUNT = window.innerWidth < 768 ? 2 : 3;
     let animId = null;
 
     function resize() {
@@ -2872,7 +2851,7 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     }
 
     let sakuraLastTime = 0;
-    const SAKURA_FPS = 10;
+    const SAKURA_FPS = 8;
     const sakuraInterval = 1000 / SAKURA_FPS;
 
     function animate(timestamp) {
@@ -3038,7 +3017,7 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
 
   document.addEventListener('DOMContentLoaded', () => {
     initPageLoad();
-    initParticles();
+    // initParticles(); // 已禁用，节省性能
     initSakura();
     initScrollReveal();
     initMouseGlow();
@@ -3047,7 +3026,7 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     initCard3D();
     initTitleReveal();
     initStatGlow();
-    initStarTrail();
+    // initStarTrail(); // 已禁用，节省性能
     initSwordSlash();
     initClickEmoji();
     initNavTime();
