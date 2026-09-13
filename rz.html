@@ -3,155 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>剑修哥 · 修行日志</title>
+<title>剑修哥 · 更新日志</title>
 <link rel="icon" type="image/jpeg" href="images/avatar.jpg">
 <link rel="apple-touch-icon" href="images/avatar.jpg">
-<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
-/* ============================================
-   剑修哥 · 修行日誌
-   風格：仙俠 / 武俠 · 水墨意境
-   ============================================ */
-
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
   --ink-deep: #3a3f5c; --ink-dark: #4a4f6b; --ink-mid: #6b7089;
   --ink-light: #8f94ab; --ink-faint: #b8bccd;
-  --paper-light: #ffffff; --paper-base: #f7f8fc;
-  --paper-warm: #eef0f8; --paper-deep: #dfe3f0;
-  --cinnabar: #ff6b9d; --cinnabar-light: #ff8fb8; --cinnabar-deep: #e0527f;
-  --jade: #5ab0ff; --jade-light: #8cc8ff; --jade-deep: #3a8fdb;
-  --gold: #ffb84d; --gold-light: #ffd78a; --gold-deep: #e69c30;
-  --font-display: 'Noto Sans SC', 'PingFang SC', sans-serif;
-  --font-serif: 'Noto Sans SC', 'PingFang SC', sans-serif;
-  --font-sans: 'Noto Sans SC', sans-serif;
+  --pink: #ff6b9d; --pink-light: #ff8fb8; --pink-deep: #e0527f;
+  --blue: #5ab0ff; --blue-light: #8cc8ff; --blue-deep: #3a8fdb;
+  --gold: #ffb84d;
 }
-
-html { scroll-behavior: smooth; }
 
 body {
-  font-family: var(--font-serif); color: var(--ink-dark);
-  background: var(--paper-base); min-height: 100vh;
-  overflow-x: hidden; position: relative; line-height: 1.7;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: var(--ink-dark);
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f7f8fc 0%, #e8ecf8 50%, #f0e8f8 100%);
+  background-attachment: fixed;
+  line-height: 1.7;
+  overflow-x: hidden;
 }
 
-.bg-layer {
+/* 背景装饰 */
+body::before {
+  content: '';
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 0; overflow: hidden;
-}
-.bg-layer::before {
-  content: ''; position: absolute; inset: 0;
-  background-image:
-    radial-gradient(ellipse at 20% 30%, rgba(139, 119, 91, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 70%, rgba(100, 80, 60, 0.05) 0%, transparent 50%),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
-  opacity: 0.8;
-}
-
-
-  66% { transform: translate(-20px, 20px) scale(0.95); }
-}
-
-
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,107,157,0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(90,176,255,0.08) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255,184,77,0.05) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
 }
 
 /* 导航栏 */
 .top-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: center;
-  padding: 14px 24px;
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  padding: 14px 32px;
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   border-bottom: 1px solid rgba(255,255,255,0.5);
-  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.08);
 }
 .nav-left {
-  position: absolute; left: 24px;
+  position: absolute; left: 32px;
   display: flex; align-items: center; gap: 12px; text-decoration: none;
 }
-.seal-logo {
-  width: 40px; height: 40px; background: var(--cinnabar); border-radius: 4px;
-  display: flex; align-items: center; justify-content: center;
-  transform: rotate(-3deg); transition: transform 0.3s ease;
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15), 0 2px 8px rgba(184,52,46,0.3);
+.nav-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.9);
+  box-shadow: 0 2px 12px rgba(255,107,157,0.2);
 }
-.seal-logo:hover { transform: rotate(0deg) scale(1.1); }
-.seal-text {
-  font-family: var(--font-display); font-size: 22px; color: var(--paper-light);
-  font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-.nav-title {
-  font-family: var(--font-display); font-size: 17px; color: var(--ink-deep); letter-spacing: 3px;
-}
-.nav-menu {
-  display: flex; align-items: center; gap: 8px; list-style: none;
-}
-.nav-menu a {
-  font-family: var(--font-display); font-size: 15px; color: var(--ink-mid);
-  text-decoration: none; padding: 6px 14px; border-radius: 6px;
-  position: relative; transition: all 0.3s ease;
-}
-.nav-menu a:hover {
-  color: var(--cinnabar); background: rgba(184,52,46,0.08);
-}
-.nav-menu a.active {
-  color: var(--cinnabar); background: rgba(184,52,46,0.1);
-}
-.nav-menu a.nav-bilibili {
-  color: #fb7299; border: 1px solid rgba(251,114,153,0.3);
-}
-.nav-menu a.nav-bilibili:hover {
-  background: rgba(251,114,153,0.1); border-color: #fb7299;
-}
-.nav-toggle {
-  display: none; flex-direction: column; gap: 5px; cursor: pointer;
-  background: none; border: none; padding: 8px;
-}
-.nav-toggle span {
-  width: 24px; height: 2px; background: var(--ink-dark); border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-/* 实时时间显示 */
-.nav-time {
-  position: absolute; right: 32px;
-  display: flex; align-items: center; gap: 6px;
-  font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 13px; color: var(--ink-mid);
+.nav-brand {
+  font-size: 18px; font-weight: 700; color: var(--ink-deep);
   letter-spacing: 1px;
-  background: rgba(255,255,255,0.5);
-  padding: 5px 12px; border-radius: 20px;
-  border: 1px solid var(--paper-deep);
 }
-.nav-time svg { width: 13px; height: 13px; color: var(--cinnabar); }
-@media (max-width: 768px) {
-  .nav-time { display: none; }
+.nav-links {
+  display: flex; gap: 28px; list-style: none;
+}
+.nav-links a {
+  text-decoration: none; color: var(--ink-mid);
+  font-size: 14px; font-weight: 500;
+  transition: color 0.3s; position: relative;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--pink); }
+.nav-links a.active::after {
+  content: ''; position: absolute; bottom: -6px; left: 50%;
+  transform: translateX(-50%); width: 20px; height: 2px;
+  background: var(--pink); border-radius: 2px;
 }
 
-/* 主内容 */
-.main-container {
-  position: relative; z-index: 2; max-width: 900px;
-  margin: 0 auto; padding: 120px 24px 80px;
+/* 主容器 */
+.page-wrapper {
+  position: relative; z-index: 2;
+  max-width: 900px; margin: 100px auto 60px;
+  padding: 40px 36px;
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
 }
 
 /* 页面标题 */
 .page-header {
-  text-align: center; margin-bottom: 60px; position: relative;
+  text-align: center; margin-bottom: 40px;
 }
 .page-title {
-  font-family: var(--font-display); font-size: 48px; color: var(--ink-deep);
-  letter-spacing: 12px; margin-bottom: 16px; padding-left: 12px;
-  text-shadow: 0 2px 8px rgba(26,22,19,0.1);
+  font-size: 36px; font-weight: 900; color: var(--ink-deep);
+  letter-spacing: 4px; margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--ink-deep), var(--pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 .page-subtitle {
-  font-family: var(--font-serif); font-size: 16px; color: var(--ink-light);
-  letter-spacing: 6px;
-}
-.page-divider {
-  width: 120px; height: 2px; margin: 24px auto 0;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  font-size: 14px; color: var(--ink-light); letter-spacing: 2px;
 }
 
 /* 时间线 */
@@ -160,359 +112,240 @@ body {
 }
 .timeline::before {
   content: ''; position: absolute; left: 12px; top: 0; bottom: 0;
-  width: 2px; background: linear-gradient(180deg, var(--gold) 0%, var(--cinnabar) 50%, var(--jade) 100%);
-  opacity: 0.4;
+  width: 2px; background: linear-gradient(to bottom, var(--pink), var(--blue), var(--gold));
+  border-radius: 2px;
 }
 
-.timeline-item {
-  position: relative; margin-bottom: 40px;
-  animation: fadeInUp 0.6s ease-out forwards;
-  opacity: 0;
+/* 日志条目 */
+.log-entry {
+  position: relative; margin-bottom: 32px;
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
-.timeline-item:nth-child(1) { animation-delay: 0.1s; }
-.timeline-item:nth-child(2) { animation-delay: 0.2s; }
-.timeline-item:nth-child(3) { animation-delay: 0.3s; }
-.timeline-item:nth-child(4) { animation-delay: 0.4s; }
-.timeline-item:nth-child(5) { animation-delay: 0.5s; }
-.timeline-item:nth-child(6) { animation-delay: 0.6s; }
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.log-entry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
-
-.timeline-dot {
-  position: absolute; left: -34px; top: 8px;
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--paper-base); border: 3px solid var(--cinnabar);
-  box-shadow: 0 0 0 4px rgba(184,52,46,0.1), 0 2px 8px rgba(184,52,46,0.3);
-  z-index: 1;
+.log-entry::before {
+  content: ''; position: absolute; left: -34px; top: 28px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--pink); border: 3px solid white;
+  box-shadow: 0 0 0 3px rgba(255,107,157,0.3);
 }
-.timeline-item.major .timeline-dot {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 4px rgba(201,169,110,0.15), 0 2px 12px rgba(201,169,110,0.4);
+.log-entry.major::before {
+  background: var(--gold);
+  box-shadow: 0 0 0 3px rgba(255,184,77,0.3);
 }
-.timeline-item.update .timeline-dot {
-  border-color: var(--jade);
-  box-shadow: 0 0 0 4px rgba(61,122,110,0.15), 0 2px 8px rgba(61,122,110,0.3);
+.log-entry.new::before {
+  background: var(--blue);
+  box-shadow: 0 0 0 3px rgba(90,176,255,0.3);
 }
 
-.timeline-card {
-  background: rgba(255,255,255,0.6); backdrop-filter: blur(4px);
-  border: 1px solid rgba(205,188,159,0.4); border-radius: 12px;
-  padding: 24px 28px; position: relative;
-  box-shadow: 0 4px 20px rgba(26,22,19,0.06);
-  transition: all 0.3s ease;
+.log-date {
+  display: inline-block;
+  font-size: 12px; font-weight: 700; color: white;
+  background: linear-gradient(135deg, var(--pink), var(--pink-deep));
+  padding: 4px 14px; border-radius: 12px;
+  margin-bottom: 12px; letter-spacing: 1px;
 }
-.timeline-card:hover {
-  transform: translateX(4px);
-  box-shadow: 0 8px 30px rgba(26,22,19,0.1);
-  border-color: rgba(201,169,110,0.5);
+.log-entry.major .log-date {
+  background: linear-gradient(135deg, var(--gold), #e69c30);
 }
-.timeline-card::before {
-  content: ''; position: absolute; left: -8px; top: 12px;
-  width: 16px; height: 16px; background: rgba(255,255,255,0.6);
-  border-left: 1px solid rgba(205,188,159,0.4);
-  border-bottom: 1px solid rgba(205,188,159,0.4);
-  transform: rotate(45deg);
+.log-entry.new .log-date {
+  background: linear-gradient(135deg, var(--blue), var(--blue-deep));
 }
 
-.timeline-date {
-  font-family: var(--font-display); font-size: 14px; color: var(--cinnabar);
-  letter-spacing: 2px; margin-bottom: 8px;
-  display: flex; align-items: center; gap: 8px;
+.log-version {
+  font-size: 20px; font-weight: 700; color: var(--ink-deep);
+  margin-bottom: 8px;
 }
-.timeline-date::before {
-  content: '📅'; font-size: 12px;
+.log-desc {
+  font-size: 14px; color: var(--ink-mid); margin-bottom: 12px;
 }
-.timeline-tag {
-  display: inline-block; font-family: var(--font-sans); font-size: 11px;
-  padding: 2px 10px; border-radius: 10px; margin-left: auto;
-  background: rgba(184,52,46,0.1); color: var(--cinnabar);
-  letter-spacing: 1px;
+.log-list {
+  list-style: none; padding: 0;
 }
-.timeline-item.major .timeline-tag {
-  background: rgba(201,169,110,0.15); color: var(--gold-deep);
+.log-list li {
+  font-size: 13px; color: var(--ink-dark);
+  padding: 6px 0; padding-left: 20px;
+  position: relative; line-height: 1.6;
 }
-.timeline-item.update .timeline-tag {
-  background: rgba(61,122,110,0.1); color: var(--jade-deep);
+.log-list li::before {
+  content: '✦'; position: absolute; left: 0; color: var(--pink);
+  font-size: 10px; top: 8px;
 }
+.log-entry.major .log-list li::before { color: var(--gold); }
+.log-entry.new .log-list li::before { color: var(--blue); }
 
-.timeline-title {
-  font-family: var(--font-display); font-size: 22px; color: var(--ink-deep);
-  margin-bottom: 12px; letter-spacing: 2px;
+.log-tag {
+  display: inline-block; font-size: 11px; padding: 2px 10px;
+  border-radius: 8px; margin-right: 6px; margin-top: 8px;
+  font-weight: 500;
 }
-.timeline-content {
-  font-family: var(--font-serif); font-size: 15px; color: var(--ink-mid);
-  line-height: 1.8;
-}
-.timeline-content p { margin-bottom: 8px; }
-.timeline-content ul {
-  padding-left: 20px; margin: 8px 0;
-}
-.timeline-content li {
-  margin-bottom: 4px; position: relative;
-}
-.timeline-content li::before {
-  content: '▸'; position: absolute; left: -16px; color: var(--cinnabar);
-}
+.tag-new { background: rgba(90,176,255,0.15); color: var(--blue-deep); }
+.tag-fix { background: rgba(255,107,157,0.15); color: var(--pink-deep); }
+.tag-opt { background: rgba(255,184,77,0.15); color: #b87d1a; }
 
-/* 页脚 */
+/* 底部 */
 .page-footer {
-  text-align: center; margin-top: 80px; padding-top: 40px;
-  border-top: 1px solid rgba(205,188,159,0.3);
-}
-.footer-seal {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 50px; height: 50px; background: var(--cinnabar); border-radius: 4px;
-  margin-bottom: 16px; transform: rotate(-3deg);
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15), 0 4px 12px rgba(184,52,46,0.3);
-}
-.footer-seal-text {
-  font-family: var(--font-display); font-size: 26px; color: var(--paper-light);
-  font-weight: 700;
-}
-.footer-text {
-  font-family: var(--font-serif); font-size: 13px; color: var(--ink-faint);
-  letter-spacing: 2px;
-}
-.back-home {
-  display: inline-block; margin-top: 20px;
-  font-family: var(--font-display); font-size: 14px; color: var(--cinnabar);
-  text-decoration: none; padding: 8px 24px; border: 1px solid var(--cinnabar);
-  border-radius: 20px; transition: all 0.3s ease;
-}
-.back-home:hover {
-  background: var(--cinnabar); color: var(--paper-light);
+  text-align: center; margin-top: 40px; padding-top: 24px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  font-size: 12px; color: var(--ink-faint); letter-spacing: 1px;
 }
 
 /* 响应式 */
 @media (max-width: 768px) {
   .top-nav { padding: 12px 16px; }
-  .nav-title { font-size: 15px; letter-spacing: 2px; }
-  .nav-toggle { display: flex; }
-  .nav-menu {
-    position: absolute; top: 100%; left: 0; right: 0;
-    flex-direction: column; background: rgba(245,239,230,0.98);
-    backdrop-filter: blur(12px); padding: 16px; gap: 4px;
-    transform: translateY(-10px); opacity: 0; visibility: hidden;
-    transition: all 0.3s ease; border-bottom: 1px solid rgba(205,188,159,0.3);
-  }
-  .nav-menu.open { transform: translateY(0); opacity: 1; visibility: visible; }
-  .nav-menu li { width: 100%; }
-  .nav-menu a { display: block; padding: 12px 16px; border-radius: 6px; }
-  .main-container { padding-top: 100px; }
-  .page-title { font-size: 36px; letter-spacing: 8px; }
-  .page-subtitle { font-size: 14px; letter-spacing: 4px; }
+  .nav-left { left: 16px; }
+  .nav-brand { display: none; }
+  .nav-links { gap: 16px; }
+  .nav-links a { font-size: 12px; }
+  .page-wrapper { margin: 80px 12px 40px; padding: 24px 16px; border-radius: 20px; }
+  .page-title { font-size: 26px; }
   .timeline { padding-left: 30px; }
-  .timeline::before { left: 8px; }
-  .timeline-dot { left: -28px; width: 12px; height: 12px; border-width: 2px; }
-  .timeline-card { padding: 18px 20px; }
-  .timeline-title { font-size: 18px; }
-  .timeline-content { font-size: 14px; }
+  .log-entry { padding: 18px 16px; }
+  .log-entry::before { left: -26px; width: 10px; height: 10px; }
+  .log-version { font-size: 16px; }
 }
 </style>
 </head>
 <body>
 
-<div class="bg-layer">
-  <div class="ink-wash ink-wash-1"></div>
-  <div class="ink-wash ink-wash-2"></div>
-  <div class="ink-wash ink-wash-3"></div>
-  <div class="mountain-bg"></div>
-  <div class="mist-layer mist-1"></div>
-  <div class="mist-layer mist-2"></div>
-</div>
-
+<!-- 导航栏 -->
 <nav class="top-nav">
-  <a href="/" class="nav-left">
+  <a href="index.html" class="nav-left">
     <img src="images/avatar.jpg" alt="剑修哥" class="nav-avatar">
-    <div class="nav-title">剑修哥 · 个人主页</div>
+    <span class="nav-brand">剑修哥</span>
   </a>
-  <button class="nav-toggle" onclick="toggleNavMenu()">
-    <span></span><span></span><span></span>
-  </button>
-  <ul class="nav-menu">
-    <li><a href="/">首页</a></li>
-    <li><a href="/#videos">视频</a></li>
-    <li><a href="/#download">下载</a></li>
-    <li><a href="/rz" class="active">日志</a></li>
-    <li><a href="/ds">赞赏</a></li>
-    <li><a href="/jr" style="color:#0099FF;">加入官方群</a></li>
-    <li><a href="https://space.bilibili.com/36518358" target="_blank" rel="noopener noreferrer" class="nav-bilibili">B站</a></li>
+  <ul class="nav-links">
+    <li><a href="index.html">首页</a></li>
+    <li><a href="Downloads/index.html">下载</a></li>
+    <li><a href="ds.html">赞赏</a></li>
+    <li><a href="jr.html">加群</a></li>
+    <li><a href="wallpaper.html">壁纸</a></li>
+    <li><a href="rz.html" class="active">日志</a></li>
   </ul>
-  <div class="nav-time" id="navTime">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    <span id="navTimeText">--:--:--</span>
-  </div>
 </nav>
 
-<main class="main-container">
-
-  <header class="page-header">
-    <h1 class="page-title">修行日誌</h1>
-    <p class="page-subtitle">记录每一次突破与成长</p>
-    <div class="page-divider"></div>
-  </header>
+<!-- 主内容 -->
+<div class="page-wrapper">
+  <div class="page-header">
+    <h1 class="page-title">更新日志</h1>
+    <p class="page-subtitle">CHANGELOG · 记录每一次成长</p>
+  </div>
 
   <div class="timeline">
 
-    <!-- 日志条目 1 -->
-    <div class="timeline-item major">
-      <div class="timeline-dot"></div>
-      <div class="timeline-card">
-        <div class="timeline-date">
-          2026年8月25日
-          <span class="timeline-tag">重大更新</span>
-        </div>
-        <h2 class="timeline-title">个人网站正式上线</h2>
-        <div class="timeline-content">
-          <p>历经数日打磨，剑修哥个人主页正式与诸位道友见面了！</p>
-          <ul>
-            <li>仙侠水墨风格设计，意境悠远</li>
-            <li>实时同步B站粉丝、关注、获赞数据</li>
-            <li>精选视频TOP3展示</li>
-            <li>资源下载区开放</li>
-            <li>赞赏功能上线</li>
-          </ul>
-          <p>感谢各位道友的支持，后续会持续更新更多内容！</p>
-        </div>
-      </div>
+    <!-- 最新版本 -->
+    <div class="log-entry new">
+      <span class="log-date">2026-09-12</span>
+      <div class="log-version">v3.5 · QQ邮箱验证码登录</div>
+      <p class="log-desc">新增QQ邮箱验证码登录功能，支持邮箱验证码快速登录/注册</p>
+      <ul class="log-list">
+        <li>新增QQ邮箱验证码登录，输入邮箱→发送验证码→登录/注册</li>
+        <li>接入 EmailJS 邮件服务，通过QQ邮箱SMTP发送验证码</li>
+        <li>验证码5分钟有效，发送后60秒倒计时防重复</li>
+        <li>密码登录也限制仅限QQ邮箱（管理员账号除外）</li>
+        <li>登录弹窗增加「密码登录/验证码登录」标签切换</li>
+      </ul>
+      <span class="log-tag tag-new">新功能</span>
+      <span class="log-tag tag-opt">优化</span>
     </div>
 
-    <!-- 日志条目 2 -->
-    <div class="timeline-item update">
-      <div class="timeline-dot"></div>
-      <div class="timeline-card">
-        <div class="timeline-date">
-          2026年8月20日
-          <span class="timeline-tag">视频更新</span>
-        </div>
-        <h2 class="timeline-title">材质包适配布吉岛教程发布</h2>
-        <div class="timeline-content">
-          <p>最新视频《【1.20.1材质包适配布吉岛】【动态模糊光影】我用的材质包他来了》已发布！</p>
-          <ul>
-            <li>详细讲解材质包安装与配置</li>
-            <li>动态模糊光影效果展示</li>
-            <li>布吉岛服务器适配教程</li>
-          </ul>
-          <p>播放量已突破1.9万，感谢各位道友的三连支持！</p>
-        </div>
-      </div>
+    <div class="log-entry major">
+      <span class="log-date">2026-09-12</span>
+      <div class="log-version">v3.0 · iOS毛玻璃风格全面升级</div>
+      <p class="log-desc">全站风格从修仙水墨改为二次元iOS毛玻璃风格，开场动画重做</p>
+      <ul class="log-list">
+        <li>全站风格改为iOS毛玻璃：大玻璃面板、强模糊(blur 30px)、大圆角(28px)</li>
+        <li>配色从墨色系改为清新二次元：樱花粉#ff6b9d、天蓝#5ab0ff、暖金#ffb84d</li>
+        <li>开场动画重做：头像弹出→左移→JianXiu_淡入→渐隐→苹果风格「剑修哥出品」</li>
+        <li>导航栏印章logo改为圆形头像，标题改为「剑修哥·个人主页」</li>
+        <li>壁纸从3张扩充到5张，进入网站随机播放</li>
+        <li>删除修仙主题装饰：墨迹、山水、云雾、剑光元素</li>
+        <li>性能优化：移除全屏backdrop-filter，樱花降至3-5片，blur值降低</li>
+        <li>修复致命JS语法错误（initStarTrail后多余}导致整个脚本失效）</li>
+      </ul>
+      <span class="log-tag tag-new">新风格</span>
+      <span class="log-tag tag-fix">修复</span>
+      <span class="log-tag tag-opt">性能</span>
     </div>
 
-    <!-- 日志条目 3 -->
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-card">
-        <div class="timeline-date">
-          2026年8月15日
-          <span class="timeline-tag">动态</span>
-        </div>
-        <h2 class="timeline-title">粉丝突破300人</h2>
-        <div class="timeline-content">
-          <p>B站粉丝数正式突破300人大关！</p>
-          <p>从0到300，感谢每一位关注我的道友。你们的支持是我持续创作的动力。</p>
-          <p>粉丝群已开放：群号 1003572258，群名 Bili_剑修哥，欢迎加入交流！</p>
-        </div>
-      </div>
+    <div class="log-entry">
+      <span class="log-date">2026-09-11</span>
+      <div class="log-version">v2.5 · 登录系统 & 浏览统计</div>
+      <p class="log-desc">新增用户登录功能、浏览人数统计、背景时间显示</p>
+      <ul class="log-list">
+        <li>新增邮箱+密码登录/注册功能（前端localStorage存储）</li>
+        <li>右上角显示登录状态，点击用户头像可退出</li>
+        <li>新增浏览人数统计：访客数、总浏览量、文章数、最后更新时间</li>
+        <li>不蒜子+localStorage双保险统计</li>
+        <li>右下角新增背景大时钟（时间+日期）</li>
+        <li>导航栏新增实时时钟显示</li>
+      </ul>
+      <span class="log-tag tag-new">新功能</span>
     </div>
 
-    <!-- 日志条目 4 -->
-    <div class="timeline-item update">
-      <div class="timeline-dot"></div>
-      <div class="timeline-card">
-        <div class="timeline-date">
-          2026年8月10日
-          <span class="timeline-tag">视频更新</span>
-        </div>
-        <h2 class="timeline-title">PVP动态模糊教程视频发布</h2>
-        <div class="timeline-content">
-          <p>《为了一个动态模糊，让PVP玩家争抢......》视频发布！</p>
-          <ul>
-            <li>深度解析动态模糊在PVP中的应用</li>
-            <li>多种材质包效果对比</li>
-            <li>配置参数详细讲解</li>
-          </ul>
-          <p>播放量1.8万，收藏480+，感谢大家的认可！</p>
-        </div>
-      </div>
+    <div class="log-entry">
+      <span class="log-date">2026-09-10</span>
+      <div class="log-version">v2.0 · 功能完善期</div>
+      <p class="log-desc">大量功能叠加：下载、赞赏、加群、日志、后台、壁纸切换</p>
+      <ul class="log-list">
+        <li>蓝盾下载双弹窗：直联下载（国外服务器慢）+ 蓝奏云下载（快速）</li>
+        <li>新增赞赏页面，支持不同额度赞赏，跳转收款码</li>
+        <li>新增加群页面（/jr），QQ群1003572258</li>
+        <li>新增更新日志页面（/rz）</li>
+        <li>新增后台管理页面（/admin，密码admin123）</li>
+        <li>新增壁纸切换功能，3张壁纸可切换</li>
+        <li>新增樱花飘落特效</li>
+        <li>新增FPS显示器（左下角）</li>
+        <li>点击空白处出现emoji特效</li>
+        <li>广告招租：335082421@qq.com</li>
+        <li>B站粉丝数实时拉取（API接口）</li>
+      </ul>
+      <span class="log-tag tag-new">新功能</span>
     </div>
 
-    <!-- 日志条目 5 -->
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-card">
-        <div class="timeline-date">
-          2026年8月1日
-          <span class="timeline-tag">资源分享</span>
-        </div>
-        <h2 class="timeline-title">蓝盾软件下载开放</h2>
-        <div class="timeline-content">
-          <p>蓝盾软件（Radmin LAN）下载资源正式开放！</p>
-          <p>在网站下载区即可获取，提供直链下载和蓝奏云下载两种方式。</p>
-          <p>后续会持续分享更多实用软件和材质包资源，敬请期待！</p>
-        </div>
-      </div>
+    <div class="log-entry">
+      <span class="log-date">2026-09-08</span>
+      <div class="log-version">v1.5 · 部署上线</div>
+      <p class="log-desc">网站正式部署上线，域名jianxiu.icu</p>
+      <ul class="log-list">
+        <li>部署到GitHub Pages，绑定自定义域名jianxiu.icu</li>
+        <li>接入Cloudflare CDN加速</li>
+        <li>腾讯云购买域名jianxiu.icu（首年10元）</li>
+        <li>三精选视频卡片展示（材质包、动态模糊、夸克网盘教程）</li>
+        <li>B站个人数据展示：粉丝365/关注412/获赞1201/投稿12</li>
+      </ul>
+      <span class="log-tag tag-opt">部署</span>
     </div>
 
-    <!-- 日志条目 6 -->
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-card">
-        <div class="timeline-date">
-          2026年7月20日
-          <span class="timeline-tag">启程</span>
-        </div>
-        <h2 class="timeline-title">B站创作之路开启</h2>
-        <div class="timeline-content">
-          <p>正式开始在B站发布我的世界相关视频。</p>
-          <p>专注于材质包分享、PVP技巧、服务器教程等内容。</p>
-          <p>剑修之道，漫漫其修远兮，吾将上下而求索。愿与各位道友共同进步！</p>
-        </div>
-      </div>
+    <div class="log-entry">
+      <span class="log-date">2026-09-05</span>
+      <div class="log-version">v1.0 · 网站诞生</div>
+      <p class="log-desc">剑修哥个人网站初版上线，修仙水墨风格</p>
+      <ul class="log-list">
+        <li>基于B站主页（mid=36518358）生成个人介绍网站</li>
+        <li>修仙水墨风格：书法体、印章logo、墨迹山水云雾装饰</li>
+        <li>个人信息卡片、B站数据展示、精选视频</li>
+        <li>开场动画（修仙水墨风格）</li>
+      </ul>
+      <span class="log-tag tag-new">初版</span>
     </div>
 
   </div>
 
-  <footer class="page-footer">
-    <div class="footer-seal">
-      <span class="footer-seal-text">劍</span>
-    </div>
-    <p class="footer-text">剑修哥 · 个人主页 · 修行日誌</p>
-    <a href="/" class="back-home">← 返回首页</a>
-  </footer>
-
-</main>
-
-<script>
-function toggleNavMenu() {
-  const menu = document.querySelector('.nav-menu');
-  if (menu) menu.classList.toggle('open');
-}
-document.addEventListener('click', (e) => {
-  const menu = document.querySelector('.nav-menu');
-  const toggle = document.querySelector('.nav-toggle');
-  if (menu && toggle && !menu.contains(e.target) && !toggle.contains(e.target)) {
-    menu.classList.remove('open');
-  }
-});
-
-// 实时时间
-(function() {
-  const el = document.getElementById('navTimeText');
-  if (!el) return;
-  function update() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    const s = String(now.getSeconds()).padStart(2, '0');
-    el.textContent = h + ':' + m + ':' + s;
-  }
-  update();
-  setInterval(update, 1000);
-})();
-</script>
+  <div class="page-footer">
+    <p>© 2026 剑修哥 · 个人主页 · 持续更新中</p>
+    <p style="margin-top:4px;">广告招租：335082421@qq.com</p>
+  </div>
+</div>
 
 </body>
 </html>

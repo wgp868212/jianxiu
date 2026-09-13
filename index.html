@@ -115,11 +115,11 @@ body { background: var(--paper-base); }
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: center;
   padding: 14px 32px;
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   border-bottom: 1px solid rgba(255,255,255,0.5);
-  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.08);
 }
 .nav-left {
   position: absolute; left: 32px;
@@ -1270,8 +1270,14 @@ body { background: var(--paper-base); }
 /* 页面容器 */
 .page-wrapper {
   position: relative; z-index: 2;
-  max-width: 1100px; margin: 0 auto;
-  padding: 100px 20px 40px;
+  max-width: 1140px; margin: 90px auto 40px;
+  padding: 40px 36px;
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
 }
 
 /* 顶部双栏 */
@@ -1284,12 +1290,12 @@ body { background: var(--paper-base); }
 
 /* 通用毛玻璃卡片 */
 .glass-card {
-  background: rgba(255,255,255,0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.55);
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
   padding: 28px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -1548,7 +1554,7 @@ body { background: var(--paper-base); }
   .video-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 600px) {
-  .page-wrapper { padding: 90px 14px 30px; }
+  .page-wrapper { margin: 70px 12px 30px; padding: 24px 16px; border-radius: 20px; }
   .profile-card { flex-direction: column; align-items: center; text-align: center; }
   .profile-stats { justify-content: center; }
   .profile-socials { justify-content: center; }
@@ -1600,6 +1606,42 @@ body { background: var(--paper-base); }
   animation: cursorBlink 0.7s infinite;
 }
 @keyframes cursorBlink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+.intro-text.fade-out {
+  opacity: 0 !important;
+  transform: translateX(-30px) !important;
+}
+.intro-avatar.fade-out {
+  opacity: 0 !important;
+  transform: translateX(-70px) scale(0.8) !important;
+}
+.intro-brand {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  font-size: 64px; font-weight: 300;
+  color: #3a3f5c;
+  letter-spacing: 16px;
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: 'Noto Sans SC', sans-serif;
+  text-align: center;
+  text-shadow: 0 2px 20px rgba(255,107,157,0.2);
+}
+.intro-brand.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.intro-brand::after {
+  content: '';
+  display: block;
+  width: 40px; height: 2px;
+  background: linear-gradient(90deg, #ff6b9d, #5ab0ff);
+  margin: 16px auto 0;
+  border-radius: 2px;
+}
+@media (max-width: 768px) {
+  .intro-brand { font-size: 32px; letter-spacing: 6px; }
+}
 
 /* ===== 站点统计 ===== */
 .site-stats {
@@ -1723,12 +1765,36 @@ body { background: var(--paper-base); }
 .login-switch { text-align: center; font-size: 13px; color: #8f94ab; margin-top: 16px; }
 .login-switch a { color: #5ab0ff; text-decoration: none; }
 .login-tip { text-align: center; font-size: 11px; color: #b8bccd; margin-top: 12px; }
+.login-tabs {
+  display: flex; gap: 8px; margin-bottom: 20px;
+  background: rgba(0,0,0,0.04); border-radius: 12px; padding: 4px;
+}
+.login-tab {
+  flex: 1; padding: 10px; border: none; background: transparent;
+  border-radius: 8px; font-size: 14px; color: #666; cursor: pointer;
+  transition: all 0.3s; font-family: inherit;
+}
+.login-tab.active {
+  background: white; color: #3a3f5c; font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.code-input-row { display: flex; gap: 10px; }
+.code-input-row input { flex: 1; }
+.send-code-btn {
+  padding: 0 16px; white-space: nowrap;
+  background: linear-gradient(135deg, #ff6b9d, #5ab0ff);
+  color: white; border: none; border-radius: 10px;
+  font-size: 13px; cursor: pointer; transition: opacity 0.3s;
+  font-family: inherit;
+}
+.send-code-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 @media (max-width: 768px) {
   .nav-auth { display: none; }
 }
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -1740,6 +1806,7 @@ body { background: var(--paper-base); }
       <span class="intro-name">JianXiu_</span><span class="intro-cursor"></span>
     </div>
   </div>
+  <div class="intro-brand" id="introBrand">剑修哥出品</div>
 </div>
 
 <!-- 壁纸背景层 -->
@@ -2186,7 +2253,13 @@ body { background: var(--paper-base); }
     <div class="login-icon">👤</div>
     <h3 class="login-title" id="loginTitle">登录</h3>
     <p class="login-subtitle">登录后可同步壁纸偏好与浏览记录</p>
-    <form class="login-form" onsubmit="handleLogin(event)">
+    <!-- 登录方式切换 -->
+    <div class="login-tabs">
+      <button class="login-tab active" data-tab="password" onclick="switchLoginTab('password')">密码登录</button>
+      <button class="login-tab" data-tab="code" onclick="switchLoginTab('code')">验证码登录</button>
+    </div>
+    <!-- 密码登录 -->
+    <form class="login-form" id="passwordLoginForm" onsubmit="handleLogin(event)">
       <div class="login-field">
         <label>邮箱</label>
         <input type="email" id="loginEmail" placeholder="请输入邮箱" required>
@@ -2198,7 +2271,23 @@ body { background: var(--paper-base); }
       <div class="login-error" id="loginError"></div>
       <button type="submit" class="login-submit">登录</button>
     </form>
-    <div class="login-switch">
+    <!-- 验证码登录 -->
+    <form class="login-form" id="codeLoginForm" style="display:none" onsubmit="handleCodeLogin(event)">
+      <div class="login-field">
+        <label>邮箱</label>
+        <input type="email" id="codeEmail" placeholder="请输入邮箱" required>
+      </div>
+      <div class="login-field">
+        <label>验证码</label>
+        <div class="code-input-row">
+          <input type="text" id="codeInput" placeholder="6位验证码" maxlength="6" required>
+          <button type="button" class="send-code-btn" id="sendCodeBtn" onclick="sendVerifyCode()">发送验证码</button>
+        </div>
+      </div>
+      <div class="login-error" id="codeError"></div>
+      <button type="submit" class="login-submit">登录 / 注册</button>
+    </form>
+    <div class="login-switch" id="loginSwitch">
       还没有账号？<a href="javascript:;" onclick="switchLoginMode('register')">立即注册</a>
     </div>
     <div class="login-tip">默认管理员：admin@jianxiu.icu / admin123</div>
@@ -2218,8 +2307,130 @@ body { background: var(--paper-base); }
 
 <script>
 
+// ===== EmailJS 配置（注册后填入你的ID） =====
+// 注册地址：https://www.emailjs.com/
+// 1. 添加 Email Service（选 Custom SMTP，填QQ邮箱SMTP）
+// 2. 创建 Email Template（模板变量：{{to_email}} {{code}} {{expire}}）
+// 3. 在 Account > API Keys 复制 Public Key
+const EMAILJS_CONFIG = {
+  publicKey: '8uUNLXZyCzbIutmil',
+  serviceId: 'service_pwigo2k',
+  templateId: 'template_r5mdntb'
+};
+// QQ邮箱SMTP配置（在EmailJS后台填，不是这里）
+// SMTP Host: smtp.qq.com
+// SMTP Port: 465
+// Username: 你的QQ号@qq.com
+// Password: QQ邮箱授权码（不是QQ密码，在QQ邮箱设置>账户里开启SMTP获取）
+
+let currentVerifyCode = '';
+let verifyCodeExpire = 0;
+let codeCountdown = 0;
+
 // ===== 登录功能（前端模拟） =====
 let loginMode = 'login';
+let loginTab = 'password';
+
+function switchLoginTab(tab) {
+  loginTab = tab;
+  document.querySelectorAll('.login-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  document.getElementById('passwordLoginForm').style.display = tab === 'password' ? '' : 'none';
+  document.getElementById('codeLoginForm').style.display = tab === 'code' ? '' : 'none';
+  document.getElementById('loginSwitch').style.display = tab === 'password' ? '' : 'none';
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('codeError').textContent = '';
+}
+
+function sendVerifyCode() {
+  const email = document.getElementById('codeEmail').value.trim();
+  const errEl = document.getElementById('codeError');
+  const btn = document.getElementById('sendCodeBtn');
+  errEl.style.color = '#e0527f';
+  if (!email) { errEl.textContent = '请先输入邮箱'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = '请输入正确的邮箱地址'; return; }
+  if (EMAILJS_CONFIG.publicKey === 'YOUR_PUBLIC_KEY') {
+    errEl.textContent = '邮件服务未配置，请先在代码里填入EmailJS的ID';
+    return;
+  }
+  // 生成6位验证码
+  currentVerifyCode = String(Math.floor(100000 + Math.random() * 900000));
+  verifyCodeExpire = Date.now() + 5 * 60 * 1000; // 5分钟有效
+  // 发送邮件
+  btn.disabled = true;
+  btn.textContent = '发送中...';
+  const templateParams = {
+    to_email: email,
+    code: currentVerifyCode,
+    expire: '5分钟',
+    from_name: '剑修哥'
+  };
+  // 初始化EmailJS
+  if (window.emailjs) {
+    window.emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+    window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
+      .then(function() {
+        errEl.style.color = '#4ade80';
+        errEl.textContent = '验证码已发送，请查收邮箱（可能在垃圾箱）';
+        startCodeCountdown();
+      })
+      .catch(function(err) {
+        errEl.textContent = '发送失败：' + (err.text || JSON.stringify(err));
+        btn.disabled = false;
+        btn.textContent = '发送验证码';
+      });
+  } else {
+    // SDK未加载时的降级：控制台输出验证码（开发调试用）
+    console.log('【调试模式】验证码：', currentVerifyCode);
+    errEl.style.color = '#4ade80';
+    errEl.textContent = '调试模式：验证码已在控制台输出（F12查看）';
+    startCodeCountdown();
+  }
+}
+
+function startCodeCountdown() {
+  const btn = document.getElementById('sendCodeBtn');
+  codeCountdown = 60;
+  btn.disabled = true;
+  var timer = setInterval(function() {
+    codeCountdown--;
+    if (codeCountdown <= 0) {
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.textContent = '发送验证码';
+    } else {
+      btn.textContent = codeCountdown + 's后重发';
+    }
+  }, 1000);
+}
+
+function handleCodeLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('codeEmail').value.trim();
+  const code = document.getElementById('codeInput').value.trim();
+  const errEl = document.getElementById('codeError');
+  errEl.style.color = '#e0527f';
+  if (!email || !code) { errEl.textContent = '请填写邮箱和验证码'; return; }
+  if (Date.now() > verifyCodeExpire) { errEl.textContent = '验证码已过期，请重新发送'; return; }
+  if (code !== currentVerifyCode) { errEl.textContent = '验证码错误'; return; }
+  // 验证成功，自动注册/登录
+  try {
+    let users = JSON.parse(localStorage.getItem('jx_users') || '{}');
+    if (!users['admin@jianxiu.icu']) {
+      users['admin@jianxiu.icu'] = { password: 'admin123', role: 'admin' };
+    }
+    if (!users[email]) {
+      users[email] = { password: '', role: 'user', regTime: Date.now() };
+    }
+    localStorage.setItem('jx_users', JSON.stringify(users));
+    localStorage.setItem('jx_current_user', JSON.stringify({ email: email, role: users[email].role, loginTime: Date.now() }));
+    closeLoginModal();
+    updateNavAuth();
+    showLoginToast('登录成功，欢迎 ' + email);
+    currentVerifyCode = '';
+  } catch(err) { errEl.textContent = '登录失败，请重试'; }
+}
 function showLoginModal() {
   document.getElementById('loginModal').classList.add('show');
   document.getElementById('loginError').textContent = '';
@@ -2244,6 +2455,9 @@ function handleLogin(e) {
   const errEl = document.getElementById('loginError');
   errEl.style.color = '#e0527f';
   if (!email || !password) { errEl.textContent = '请填写邮箱和密码'; return; }
+  if (email !== 'admin@jianxiu.icu' && !/^\\d+@qq\\.com$/.test(email)) {
+    errEl.textContent = '仅限QQ邮箱登录（如123456@qq.com）'; return;
+  }
   try {
     let users = JSON.parse(localStorage.getItem('jx_users') || '{}');
     if (!users['admin@jianxiu.icu']) {
@@ -2310,10 +2524,19 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
   const text = document.getElementById('introText');
   // 页面加载后启动
   function startIntro() {
-    setTimeout(function() { if (avatar) avatar.classList.add('move-left'); }, 700);
-    setTimeout(function() { if (text) text.classList.add('show'); }, 1100);
-    setTimeout(function() { overlay.classList.add('hide'); }, 2800);
-    setTimeout(function() { overlay.style.display = 'none'; }, 3600);
+    const brand = document.getElementById('introBrand');
+    setTimeout(function() { if (avatar) avatar.classList.add('move-left'); }, 600);
+    setTimeout(function() { if (text) text.classList.add('show'); }, 1000);
+    // JianXiu_ 和头像渐隐
+    setTimeout(function() {
+      if (text) text.classList.add('fade-out');
+      if (avatar) avatar.classList.add('fade-out');
+    }, 1800);
+    // 苹果风格出现"剑修哥出品"
+    setTimeout(function() { if (brand) brand.classList.add('show'); }, 2100);
+    // 整体淡出
+    setTimeout(function() { overlay.classList.add('hide'); }, 4000);
+    setTimeout(function() { overlay.style.display = 'none'; }, 4800);
   }
   if (document.readyState === 'complete') startIntro();
   else window.addEventListener('load', startIntro);
@@ -2531,7 +2754,9 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
   const WALLPAPERS = [
     { id: 1, desktop: 'images/wallpapers/wp1-desktop.jpg', mobile: 'images/wallpapers/wp1-mobile.jpg' },
     { id: 2, desktop: 'images/wallpapers/wp2-desktop.jpg', mobile: 'images/wallpapers/wp2-mobile.jpg' },
-    { id: 3, desktop: 'images/wallpapers/wp3-desktop.jpg', mobile: 'images/wallpapers/wp3-mobile.jpg' }
+    { id: 3, desktop: 'images/wallpapers/wp3-desktop.jpg', mobile: 'images/wallpapers/wp3-mobile.jpg' },
+    { id: 4, desktop: 'images/wallpapers/wp4-desktop.jpg', mobile: 'images/wallpapers/wp4-mobile.jpg' },
+    { id: 5, desktop: 'images/wallpapers/wp5-desktop.jpg', mobile: 'images/wallpapers/wp5-mobile.jpg' }
   ];
   let currentWallpaper = 1;
 
@@ -3035,6 +3260,8 @@ function showToast() {
   <button class="wallpaper-btn active" data-wp="1" style="background-image:url('images/wallpapers/wp1-desktop.jpg')" onclick="switchWallpaper(1)" title="原神"></button>
   <button class="wallpaper-btn" data-wp="2" style="background-image:url('images/wallpapers/wp2-desktop.jpg')" onclick="switchWallpaper(2)" title="动漫1"></button>
   <button class="wallpaper-btn" data-wp="3" style="background-image:url('images/wallpapers/wp3-desktop.jpg')" onclick="switchWallpaper(3)" title="动漫2"></button>
+  <button class="wallpaper-btn" data-wp="4" style="background-image:url('images/wallpapers/wp4-desktop.jpg')" onclick="switchWallpaper(4)" title="动漫3"></button>
+  <button class="wallpaper-btn" data-wp="5" style="background-image:url('images/wallpapers/wp5-desktop.jpg')" onclick="switchWallpaper(5)" title="动漫4"></button>
 </div>
 
 <!-- FPS 显示器 -->
