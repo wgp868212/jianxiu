@@ -44,9 +44,11 @@
   --cinnabar: #ff6b9d; --cinnabar-light: #ff8fb8; --cinnabar-deep: #e0527f;
   --jade: #5ab0ff; --jade-light: #8cc8ff; --jade-deep: #3a8fdb;
   --gold: #ffb84d; --gold-light: #ffd78a; --gold-deep: #e69c30;
-  --font-display: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  --font-display: 'ZCOOL KuaiLe', 'Poppins', 'Noto Sans SC', cursive;
   --font-serif: 'Noto Sans SC', 'PingFang SC', sans-serif;
-  --font-sans: 'Noto Sans SC', sans-serif;
+  --font-sans: 'Poppins', 'Noto Sans SC', sans-serif;
+  --font-title: 'ZCOOL KuaiLe', cursive;
+  --font-english: 'Poppins', sans-serif;
   /* iOS毛玻璃 */
   --glass-bg: rgba(255,255,255,0.55);
   --glass-bg-strong: rgba(255,255,255,0.7);
@@ -1263,23 +1265,50 @@ body { background: var(--paper-base); }
   position: relative; z-index: 2;
   max-width: 1140px; margin: 90px auto 40px;
   padding: 40px 36px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.25) 100%);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255,255,255,0.6);
-  border-radius: 28px;
+  background: linear-gradient(
+    135deg, 
+    rgba(255,255,255,0.35) 0%, 
+    rgba(255,255,255,0.15) 50%,
+    rgba(255,255,255,0.25) 100%
+  );
+  backdrop-filter: blur(30px) saturate(200%) brightness(1.1);
+  -webkit-backdrop-filter: blur(30px) saturate(200%) brightness(1.1);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 32px;
   box-shadow: 
-    0 20px 60px rgba(0,0,0,0.12),
-    0 8px 24px rgba(0,0,0,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.8),
-    inset 0 -1px 0 rgba(0,0,0,0.05),
-    0 0 40px rgba(255,107,157,0.08);
+    0 25px 70px rgba(0,0,0,0.15),
+    0 10px 30px rgba(0,0,0,0.1),
+    inset 0 1px 1px rgba(255,255,255,0.9),
+    inset 0 -1px 1px rgba(255,255,255,0.2),
+    inset 1px 0 1px rgba(255,255,255,0.3),
+    inset -1px 0 1px rgba(255,255,255,0.1),
+    0 0 60px rgba(255,107,157,0.1);
+  overflow: hidden;
 }
+/* 液态玻璃顶部高光 */
 .page-wrapper::before {
   content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
-  border-radius: 28px 28px 0 0;
+  position: absolute; top: 0; left: 10%; right: 10%; height: 50%;
+  background: linear-gradient(
+    180deg, 
+    rgba(255,255,255,0.25) 0%, 
+    rgba(255,255,255,0) 100%
+  );
+  border-radius: 32px 32px 0 0;
+  pointer-events: none;
+}
+/* 液态玻璃底部折射 */
+.page-wrapper::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 30%;
+  background: linear-gradient(
+    0deg, 
+    rgba(255,107,157,0.08) 0%, 
+    rgba(90,176,255,0.05) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  border-radius: 0 0 32px 32px;
+  pointer-events: none;
 }
 
 /* 顶部双栏 */
@@ -1292,33 +1321,44 @@ body { background: var(--paper-base); }
 
 /* 通用毛玻璃卡片 */
 .glass-card {
-  background: linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.3) 100%);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid rgba(255,255,255,0.6);
-  border-radius: 20px;
+  background: linear-gradient(
+    135deg, 
+    rgba(255,255,255,0.4) 0%, 
+    rgba(255,255,255,0.15) 100%
+  );
+  backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
+  -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
+  border: 1px solid rgba(255,255,255,0.45);
+  border-radius: 24px;
   box-shadow: 
-    0 4px 20px rgba(0,0,0,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.7),
-    inset 0 -1px 0 rgba(0,0,0,0.03);
+    0 6px 24px rgba(0,0,0,0.1),
+    0 2px 8px rgba(0,0,0,0.06),
+    inset 0 1px 1px rgba(255,255,255,0.8),
+    inset 0 -1px 1px rgba(255,255,255,0.15);
   padding: 28px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, border-color 0.4s ease;
   position: relative;
   overflow: hidden;
 }
 .glass-card::before {
   content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+  position: absolute; top: 0; left: 15%; right: 15%; height: 40%;
+  background: linear-gradient(
+    180deg, 
+    rgba(255,255,255,0.3) 0%, 
+    rgba(255,255,255,0) 100%
+  );
+  border-radius: 24px 24px 0 0;
+  pointer-events: none;
 }
 .glass-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px) scale(1.01);
   box-shadow: 
-    0 12px 40px rgba(0,0,0,0.12),
-    0 4px 12px rgba(0,0,0,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.8),
-    0 0 30px rgba(255,107,157,0.15);
-  border-color: rgba(255,107,157,0.4);
+    0 16px 50px rgba(0,0,0,0.15),
+    0 6px 16px rgba(0,0,0,0.1),
+    inset 0 1px 1px rgba(255,255,255,0.9),
+    0 0 40px rgba(255,107,157,0.2);
+  border-color: rgba(255,107,157,0.5);
 }
 
 /* 个人信息卡 */
@@ -1856,18 +1896,29 @@ body { background: var(--paper-base); }
 
 /* 深色模式切换按钮 */
 .theme-toggle {
-  position: fixed; top: 16px; right: 16px; z-index: 9999;
-  width: 42px; height: 42px; border-radius: 50%;
-  background: var(--glass-bg-strong);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  cursor: pointer; font-size: 18px;
+  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0.2));
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.5);
+  cursor: pointer; font-size: 20px;
   display: flex; align-items: center; justify-content: center;
-  transition: all 0.3s; box-shadow: var(--glass-shadow);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 
+    0 6px 20px rgba(0,0,0,0.15),
+    inset 0 1px 1px rgba(255,255,255,0.8),
+    0 0 20px rgba(255,107,157,0.15);
 }
-.theme-toggle:hover { transform: scale(1.1); }
+.theme-toggle:hover { 
+  transform: scale(1.15) rotate(15deg); 
+  box-shadow: 
+    0 8px 30px rgba(0,0,0,0.2),
+    inset 0 1px 1px rgba(255,255,255,0.9),
+    0 0 30px rgba(255,107,157,0.3);
+}
 @media (max-width: 768px) {
-  .theme-toggle { top: 12px; right: 12px; width: 36px; height: 36px; font-size: 16px; }
+  .theme-toggle { bottom: 16px; right: 16px; width: 42px; height: 42px; font-size: 18px; }
 }
 
 
@@ -1942,6 +1993,114 @@ input, textarea, [contenteditable] {
     inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
+
+/* ========== 液态玻璃装饰元素 ========== */
+.liquid-orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(60px); opacity: 0.4;
+  pointer-events: none; z-index: 0;
+  animation: floatOrb 8s ease-in-out infinite;
+}
+.liquid-orb.pink {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,107,157,0.6), rgba(255,107,157,0));
+  top: 10%; left: -5%;
+  animation-delay: 0s;
+}
+.liquid-orb.blue {
+  width: 250px; height: 250px;
+  background: radial-gradient(circle, rgba(90,176,255,0.5), rgba(90,176,255,0));
+  bottom: 15%; right: -3%;
+  animation-delay: -3s;
+}
+.liquid-orb.gold {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,184,77,0.4), rgba(255,184,77,0));
+  top: 50%; left: 50%;
+  animation-delay: -5s;
+}
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -30px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* 液态玻璃光泽扫过效果 */
+.liquid-shine {
+  position: relative; overflow: hidden;
+}
+.liquid-shine::after {
+  content: '';
+  position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255,255,255,0.1) 50%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.liquid-shine:hover::after {
+  transform: translateX(100%);
+}
+
+
+/* ========== 字体优化 ========== */
+h1, h2, h3, .page-title, .profile-name, .section-title {
+  font-family: var(--font-title) !important;
+  letter-spacing: 2px;
+}
+/* 数字和英文用Poppins更现代 */
+.stat-value, .site-stat-value, .msg-count, #fpsCounter, #navTimeText {
+  font-family: var(--font-english) !important;
+  font-weight: 600;
+}
+/* 按钮字体 */
+button, .btn, .nav-login-btn, .submit-btn {
+  font-family: var(--font-sans);
+  letter-spacing: 1px;
+}
+/* 导航标题 */
+.nav-brand, .nav-title {
+  font-family: var(--font-title) !important;
+}
+
+
+/* ========== 打字机效果 ========== */
+.typewriter-quote {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--ink-mid);
+  font-style: italic;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.quote-mark {
+  color: var(--cinnabar);
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 2px;
+}
+.typewriter-cursor {
+  display: inline-block;
+  color: var(--cinnabar);
+  font-weight: 300;
+  animation: cursorBlink 0.8s infinite;
+  margin-left: 2px;
+}
+@keyframes cursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+#typewriterText {
+  font-family: var(--font-serif);
+  letter-spacing: 0.5px;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
@@ -1966,9 +2125,15 @@ input, textarea, [contenteditable] {
 }
 </script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href='https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=ZCOOL+KuaiLe&family=Poppins:wght@300;400;500;600;700;800;900&display=swap' rel='stylesheet'>
 </head>
 <body>
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换深色/浅色模式">🌙</button>
+<div class="liquid-orb pink"></div>
+<div class="liquid-orb blue"></div>
+<div class="liquid-orb gold"></div>
 
 
 <!-- 开场动画 -->
@@ -2089,6 +2254,12 @@ input, textarea, [contenteditable] {
         <h1 class="profile-name">剑修哥</h1>
 
         <p class="profile-bio">B站游戏UP主，专注我的世界材质包、动态模糊光影、PVP技巧与软件下载教程。粉丝群1003572258</p>
+        <div class="typewriter-quote">
+          <span class="quote-mark">"</span>
+          <span id="typewriterText"></span>
+          <span class="quote-mark">"</span>
+          <span class="typewriter-cursor">|</span>
+        </div>
 
         <div class="profile-stats">
 
@@ -2755,27 +2926,47 @@ function showLoginToast(msg) {
 document.addEventListener('DOMContentLoaded', updateNavAuth);
 
 
-// ===== 开场动画 =====
+// ===== 开场动画（JianXiu_打字机效果） =====
 (function() {
   const overlay = document.getElementById('introOverlay');
   if (!overlay) return;
   const avatar = document.getElementById('introAvatar');
   const text = document.getElementById('introText');
-  // 页面加载后启动
+  const nameEl = document.querySelector('.intro-name');
+  
   function startIntro() {
     const brand = document.getElementById('introBrand');
+    // 头像左移
     setTimeout(function() { if (avatar) avatar.classList.add('move-left'); }, 600);
+    // 文字区域显示
     setTimeout(function() { if (text) text.classList.add('show'); }, 1000);
-    // JianXiu_ 和头像渐隐
-    setTimeout(function() {
-      if (text) text.classList.add('fade-out');
-      if (avatar) avatar.classList.add('fade-out');
-    }, 1800);
-    // 苹果风格出现"剑修哥出品"
-    setTimeout(function() { if (brand) brand.classList.add('show'); }, 2100);
+    
+    // JianXiu_ 打字机效果
+    const fullText = 'JianXiu_';
+    let charIdx = 0;
+    if (nameEl) {
+      nameEl.textContent = '';
+      function typeName() {
+        if (charIdx < fullText.length) {
+          nameEl.textContent = fullText.substring(0, charIdx + 1);
+          charIdx++;
+          setTimeout(typeName, 100); // 每个字100ms
+        } else {
+          // 打完后停顿，然后渐隐
+          setTimeout(function() {
+            if (text) text.classList.add('fade-out');
+            if (avatar) avatar.classList.add('fade-out');
+          }, 600);
+          // 苹果风格出现"剑修哥出品"
+          setTimeout(function() { if (brand) brand.classList.add('show'); }, 900);
+        }
+      }
+      setTimeout(typeName, 1100); // 文字区域显示后开始打字
+    }
+    
     // 整体淡出
-    setTimeout(function() { overlay.classList.add('hide'); }, 4000);
-    setTimeout(function() { overlay.style.display = 'none'; }, 4800);
+    setTimeout(function() { overlay.classList.add('hide'); }, 3500);
+    setTimeout(function() { overlay.style.display = 'none'; }, 4300);
   }
   if (document.readyState === 'complete') startIntro();
   else window.addEventListener('load', startIntro);
@@ -2802,6 +2993,56 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
   update();
   setInterval(update, 1000);
 })();
+
+// ===== 打字机座右铭（每3秒换一句） =====
+(function() {
+  const el = document.getElementById('typewriterText');
+  if (!el) return;
+  const quotes = [
+    '彼方尚有荣光在，世界不止眼前的苟且，还有诗和远方',
+    '努力成为更好的UP主，专注我的世界材质包与PVP技巧',
+    '粉丝群1003572258，欢迎加入留璃丨剑修支援群',
+    '动态模糊光影，让你的游戏画面更丝滑',
+    '蓝盾下载，Radmin LAN 远程局域网工具',
+    '布吉岛材质包适配，PVP玩家的不二之选',
+    '剑修哥出品，必属精品',
+    '感谢每一位粉丝的支持与陪伴'
+  ];
+  let quoteIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+  let typingSpeed = 80; // 打字速度ms
+  
+  function type() {
+    const current = quotes[quoteIndex];
+    if (!isDeleting) {
+      // 打字中
+      el.textContent = current.substring(0, charIndex + 1);
+      charIndex++;
+      if (charIndex === current.length) {
+        // 打完了，停顿2秒后开始删除
+        isDeleting = true;
+        setTimeout(type, 2000);
+        return;
+      }
+      setTimeout(type, typingSpeed);
+    } else {
+      // 删除中
+      el.textContent = current.substring(0, charIndex - 1);
+      charIndex--;
+      if (charIndex === 0) {
+        // 删完了，换下一句
+        isDeleting = false;
+        quoteIndex = (quoteIndex + 1) % quotes.length;
+        setTimeout(type, 300);
+        return;
+      }
+      setTimeout(type, 40); // 删除速度更快
+    }
+  }
+  setTimeout(type, 500); // 页面加载后0.5秒开始
+})();
+
 
 // ===== 浏览人数（不蒜子 + localStorage备用） =====
 (function() {
