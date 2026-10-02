@@ -55,9 +55,34 @@
   --glass-border: rgba(255,255,255,0.6);
   --glass-shadow: 0 8px 32px rgba(0,0,0,0.1);
   --glass-blur: 8px;
+  /* Emil Kowalski 标准缓动曲线 */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 html { scroll-behavior: smooth; }
+
+/* 按钮按压反馈：阶梯抖动 + 弹簧回弹（motion-web 机械质感） */
+@keyframes pressJitter {
+  0%   { transform: scale(0.97) translate(0, 0); }
+  25%  { transform: scale(0.97) translate(0.6px, -0.6px); }
+  50%  { transform: scale(0.97) translate(-0.6px, 0.6px); }
+  75%  { transform: scale(0.97) translate(0.6px, 0.6px); }
+  100% { transform: scale(0.97) translate(0, 0); }
+}
+button:active,
+.nav-menu a:active,
+.medal-item:active,
+.download-btn:active,
+.reward-btn:active,
+.bilibili-btn:active,
+.group-copy-btn:active,
+.wallpaper-btn:active,
+.card:active,
+.intro-skip:active {
+  animation: pressJitter 0.09s steps(4) infinite;
+}
 
 body {
   font-family: var(--font-serif); color: var(--ink-dark);
@@ -97,13 +122,6 @@ body { background: var(--paper-base); }
   opacity: 0.8;
 }
 
-
-  66% { transform: translate(-20px, 20px) scale(0.95); }
-}
-
-
-}
-
 #particleCanvas {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   pointer-events: none; z-index: 1;
@@ -118,11 +136,11 @@ body { background: var(--paper-base); }
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: center;
   padding: 14px 32px;
-  background: rgba(255,255,255,0.4);
-  -webkit-backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.45);
+  -webkit-backdrop-filter: blur(15px) saturate(180%);
+  backdrop-filter: blur(15px) saturate(180%);
   border-bottom: 1px solid rgba(255,255,255,0.5);
-  box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6);
 }
 .nav-left {
   position: absolute; left: 32px;
@@ -2934,6 +2952,19 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
   const text = document.getElementById('introText');
   const nameEl = document.querySelector('.intro-name');
   
+  let introDone = false;
+  function hideOverlay() {
+    if (introDone) return;
+    introDone = true;
+    overlay.classList.add('hide');
+    setTimeout(function() { overlay.style.display = 'none'; }, 700);
+  }
+  
+  // 安全兜底：5秒后强制隐藏，防止卡住
+  setTimeout(hideOverlay, 5000);
+  // 点击跳过动画
+  overlay.addEventListener('click', hideOverlay);
+  
   function startIntro() {
     const brand = document.getElementById('introBrand');
     // 头像左移
@@ -2947,29 +2978,29 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     if (nameEl) {
       nameEl.textContent = '';
       function typeName() {
+        if (introDone) return;
         if (charIdx < fullText.length) {
           nameEl.textContent = fullText.substring(0, charIdx + 1);
           charIdx++;
-          setTimeout(typeName, 100); // 每个字100ms
+          setTimeout(typeName, 100);
         } else {
-          // 打完后停顿，然后渐隐
           setTimeout(function() {
             if (text) text.classList.add('fade-out');
             if (avatar) avatar.classList.add('fade-out');
           }, 600);
-          // 苹果风格出现"剑修哥出品"
           setTimeout(function() { if (brand) brand.classList.add('show'); }, 900);
+          setTimeout(hideOverlay, 3500);
         }
       }
-      setTimeout(typeName, 1100); // 文字区域显示后开始打字
+      setTimeout(typeName, 1100);
+    } else {
+      // 没有nameEl时直接走原流程
+      setTimeout(hideOverlay, 3500);
     }
-    
-    // 整体淡出
-    setTimeout(function() { overlay.classList.add('hide'); }, 3500);
-    setTimeout(function() { overlay.style.display = 'none'; }, 4300);
   }
   if (document.readyState === 'complete') startIntro();
-  else window.addEventListener('load', startIntro);
+  else if (document.readyState === 'interactive') setTimeout(startIntro, 100);
+  else window.addEventListener('DOMContentLoaded', startIntro);
 })();
 
 // ===== 背景时间 =====
@@ -3109,14 +3140,6 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     }
   });
 
-  function initParticles() {
-    const canvas = document.getElementById('particleCanvas');
-    if (!canvas) return;
-    // 性能优化：完全禁用竹叶粒子，节省GPU
-    canvas.style.display = 'none';
-    return;
-  }
-
   async function fetchBilibiliStats() {
     const mid = '36518358';
     const apiUrl = `https://api.bilibili.com/x/web-interface/card?mid=${mid}`;
@@ -3198,11 +3221,6 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
     revealElements.forEach(el => observer.observe(el));
-  }
-
-  function initMouseGlow() {
-    // 已禁用，节省性能
-    return;
   }
 
   function initPageLoad() {
@@ -3297,22 +3315,85 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let petals = [];
-    let burstPetals = []; // 点击爆发的花瓣
-    let trailPetals = []; // 鼠标跟随花瓣
+    let burstPetals = [];
+    let trailPetals = [];
     const isMobile = window.innerWidth < 768;
-    const PETAL_COUNT = isMobile ? 8 : 18; // 樱花数量大幅增加
+    const PETAL_COUNT = isMobile ? 8 : 18;
     let animId = null;
     let mouseX = -100, mouseY = -100;
     let lastTrailTime = 0;
+    let lastFrameTime = 0;
+    const FRAME_INTERVAL = 1000 / 30; // 樱花限制30fps，不需要60fps，省一半性能
 
-    // 樱花配色（多种粉色）
+    // 樱花配色（5种粉色）
     const PETAL_COLORS = [
-      'rgba(255, 182, 193, ALPHA)',  // 浅粉
-      'rgba(255, 154, 178, ALPHA)',  // 樱花粉
-      'rgba(255, 105, 180, ALPHA)',  // 深粉
-      'rgba(255, 228, 225, ALPHA)',  // 极浅粉
-      'rgba(255, 192, 203, ALPHA)',  // 粉红
+      { main: '#ffb6c1', light: '#ffe4e1' },
+      { main: '#ff9ab2', light: '#ffd6e0' },
+      { main: '#ff69b4', light: '#ffc0cb' },
+      { main: '#ffe4e1', light: '#fff0f0' },
+      { main: '#ffc0cb', light: '#ffe4ec' },
     ];
+
+    // ===== 预渲染樱花花瓣（只画一次，之后用drawImage，性能提升10倍）=====
+    const PRERENDER_SIZE = 64;
+    const prerenderedPetals = [];
+    const prerenderedGlowPetals = [];
+
+    function prerenderPetal(color, withGlow) {
+      const c = document.createElement('canvas');
+      c.width = PRERENDER_SIZE;
+      c.height = PRERENDER_SIZE;
+      const cx = c.getContext('2d');
+      const sz = PRERENDER_SIZE / 2 - 4;
+      cx.translate(PRERENDER_SIZE / 2, PRERENDER_SIZE / 2);
+
+      if (withGlow) {
+        cx.shadowColor = color.main;
+        cx.shadowBlur = 10;
+      }
+
+      // 花瓣主体（樱花形状+顶端心形缺口）
+      cx.beginPath();
+      cx.moveTo(0, -sz * 0.8);
+      cx.bezierCurveTo(sz*0.5, -sz*0.7, sz*0.6, -sz*0.1, sz*0.4, sz*0.3);
+      cx.bezierCurveTo(sz*0.3, sz*0.6, sz*0.1, sz*0.75, 0, sz*0.7);
+      cx.bezierCurveTo(-sz*0.1, sz*0.75, -sz*0.3, sz*0.6, -sz*0.4, sz*0.3);
+      cx.bezierCurveTo(-sz*0.6, -sz*0.1, -sz*0.5, -sz*0.7, 0, -sz*0.8);
+      cx.moveTo(0, -sz*0.8);
+      cx.quadraticCurveTo(sz*0.08, -sz*0.55, 0, -sz*0.45);
+      cx.quadraticCurveTo(-sz*0.08, -sz*0.55, 0, -sz*0.8);
+
+      // 径向渐变
+      const grad = cx.createRadialGradient(0, sz*0.1, 0, 0, sz*0.1, sz);
+      grad.addColorStop(0, color.main);
+      grad.addColorStop(0.6, color.main);
+      grad.addColorStop(1, color.light);
+      cx.fillStyle = grad;
+      cx.fill();
+
+      // 3条脉络
+      cx.globalAlpha = 0.35;
+      cx.strokeStyle = 'rgba(200,80,120,0.6)';
+      cx.lineWidth = sz * 0.06;
+      cx.lineCap = 'round';
+      cx.beginPath(); cx.moveTo(0,-sz*0.4); cx.quadraticCurveTo(0,sz*0.1,0,sz*0.55); cx.stroke();
+      cx.beginPath(); cx.moveTo(0,-sz*0.2); cx.quadraticCurveTo(-sz*0.2,sz*0.1,-sz*0.3,sz*0.4); cx.stroke();
+      cx.beginPath(); cx.moveTo(0,-sz*0.2); cx.quadraticCurveTo(sz*0.2,sz*0.1,sz*0.3,sz*0.4); cx.stroke();
+
+      // 中心高光
+      cx.globalAlpha = 0.5;
+      cx.fillStyle = 'rgba(255,255,255,0.7)';
+      cx.beginPath();
+      cx.ellipse(-sz*0.15, -sz*0.05, sz*0.18, sz*0.1, -0.3, 0, Math.PI*2);
+      cx.fill();
+
+      return c;
+    }
+
+    PETAL_COLORS.forEach((color, i) => {
+      prerenderedPetals[i] = prerenderPetal(color, false);
+      prerenderedGlowPetals[i] = prerenderPetal(color, true);
+    });
 
     function resize() {
       canvas.width = window.innerWidth;
@@ -3321,79 +3402,16 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     resize();
     window.addEventListener('resize', resize);
 
-    // 绘制樱花花瓣（细致版：真实樱花形状+脉络+渐变）
-    function drawPetal(p) {
+    // 快速绘制（用预渲染的canvas，drawImage比逐帧画贝塞尔快10倍）
+    function drawPetalFast(p, useGlow) {
+      const source = useGlow ? prerenderedGlowPetals[p.colorIndex] : prerenderedPetals[p.colorIndex];
+      if (!source) return;
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(p.rotation);
       ctx.globalAlpha = p.opacity;
-      
-      const sz = p.size;
-      const color = p.color.replace('ALPHA', '1');
-      
-      // 1. 花瓣主体（樱花花瓣形状：顶端有缺口）
-      ctx.beginPath();
-      ctx.moveTo(0, -sz * 0.8);
-      ctx.bezierCurveTo(sz * 0.5, -sz * 0.7, sz * 0.6, -sz * 0.1, sz * 0.4, sz * 0.3);
-      ctx.bezierCurveTo(sz * 0.3, sz * 0.6, sz * 0.1, sz * 0.75, 0, sz * 0.7);
-      ctx.bezierCurveTo(-sz * 0.1, sz * 0.75, -sz * 0.3, sz * 0.6, -sz * 0.4, sz * 0.3);
-      ctx.bezierCurveTo(-sz * 0.6, -sz * 0.1, -sz * 0.5, -sz * 0.7, 0, -sz * 0.8);
-      // 顶端心形缺口
-      ctx.moveTo(0, -sz * 0.8);
-      ctx.quadraticCurveTo(sz * 0.08, -sz * 0.55, 0, -sz * 0.45);
-      ctx.quadraticCurveTo(-sz * 0.08, -sz * 0.55, 0, -sz * 0.8);
-      
-      // 径向渐变填充（中心深，边缘浅）
-      const grad = ctx.createRadialGradient(0, sz * 0.1, 0, 0, sz * 0.1, sz);
-      grad.addColorStop(0, color);
-      grad.addColorStop(0.6, color);
-      grad.addColorStop(1, 'rgba(255,255,255,0.3)');
-      ctx.fillStyle = grad;
-      ctx.fill();
-      
-      // 2. 花瓣脉络（3条主脉）
-      ctx.globalAlpha = p.opacity * 0.35;
-      ctx.strokeStyle = 'rgba(200, 80, 120, 0.6)';
-      ctx.lineWidth = sz * 0.06;
-      ctx.lineCap = 'round';
-      
-      // 主脉（中心）
-      ctx.beginPath();
-      ctx.moveTo(0, -sz * 0.4);
-      ctx.quadraticCurveTo(0, sz * 0.1, 0, sz * 0.55);
-      ctx.stroke();
-      
-      // 左侧脉
-      ctx.beginPath();
-      ctx.moveTo(0, -sz * 0.2);
-      ctx.quadraticCurveTo(-sz * 0.2, sz * 0.1, -sz * 0.3, sz * 0.4);
-      ctx.stroke();
-      
-      // 右侧脉
-      ctx.beginPath();
-      ctx.moveTo(0, -sz * 0.2);
-      ctx.quadraticCurveTo(sz * 0.2, sz * 0.1, sz * 0.3, sz * 0.4);
-      ctx.stroke();
-      
-      // 3. 花瓣边缘细描边
-      ctx.globalAlpha = p.opacity * 0.25;
-      ctx.strokeStyle = 'rgba(180, 60, 100, 0.5)';
-      ctx.lineWidth = sz * 0.04;
-      ctx.beginPath();
-      ctx.moveTo(0, -sz * 0.8);
-      ctx.bezierCurveTo(sz * 0.5, -sz * 0.7, sz * 0.6, -sz * 0.1, sz * 0.4, sz * 0.3);
-      ctx.bezierCurveTo(sz * 0.3, sz * 0.6, sz * 0.1, sz * 0.75, 0, sz * 0.7);
-      ctx.bezierCurveTo(-sz * 0.1, sz * 0.75, -sz * 0.3, sz * 0.6, -sz * 0.4, sz * 0.3);
-      ctx.bezierCurveTo(-sz * 0.6, -sz * 0.1, -sz * 0.5, -sz * 0.7, 0, -sz * 0.8);
-      ctx.stroke();
-      
-      // 4. 中心高光点
-      ctx.globalAlpha = p.opacity * 0.5;
-      ctx.fillStyle = 'rgba(255,255,255,0.7)';
-      ctx.beginPath();
-      ctx.ellipse(-sz * 0.15, -sz * 0.05, sz * 0.18, sz * 0.1, -0.3, 0, Math.PI * 2);
-      ctx.fill();
-      
+      const s = p.size * 2;
+      ctx.drawImage(source, -s/2, -s/2, s, s);
       ctx.restore();
     }
 
@@ -3403,8 +3421,8 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
         this.reset(true, x, y);
       }
       reset(initial, x, y) {
+        this.colorIndex = Math.floor(Math.random() * PETAL_COLORS.length);
         if (this.isBurst) {
-          // 爆发花瓣：从点击点向外飞（带拖尾）
           this.x = x;
           this.y = y;
           const angle = Math.random() * Math.PI * 2;
@@ -3414,15 +3432,18 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
           this.life = 1.0;
           this.decay = Math.random() * 0.018 + 0.008;
           this.size = Math.random() * 7 + 4;
-          this.trail = []; // 拖尾记录
-          this.glow = Math.random() * 0.5 + 0.5; // 发光强度
+          this.trail = [];
+          this.glow = Math.random() * 0.5 + 0.5;
         } else {
           this.x = x !== undefined ? x : Math.random() * canvas.width;
           this.y = y !== undefined ? y : (initial ? Math.random() * canvas.height : -20);
           this.size = Math.random() * 10 + 4;
-          this.speedY = Math.random() * 1.5 + 0.8;
-          this.speedX = Math.random() * 2 - 1;
-          this.vx = 0; this.vy = 0;
+          // 弹簧阻尼物理：初始速度（有动量，不是匀速）
+          this.vx = (Math.random() - 0.5) * 0.5;
+          this.vy = Math.random() * 1.0 + 0.5;
+          this.gravity = 0.025 + Math.random() * 0.015;  // 重力加速度
+          this.windStrength = 0.05 + Math.random() * 0.03; // 风力加速度
+          this.drag = 0.988;  // 空气阻力（速度衰减）
           this.life = 1; this.decay = 0;
         }
         this.swaySpeed = Math.random() * 0.03 + 0.015;
@@ -3431,27 +3452,31 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
         this.rotation = Math.random() * Math.PI * 2;
         this.rotationSpeed = (Math.random() - 0.5) * 0.05;
         this.opacity = Math.random() * 0.4 + 0.5;
-        this.color = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)];
         this.time = Math.random() * 100;
       }
       update() {
         this.time += this.swaySpeed;
         if (this.isBurst) {
-          // 爆发花瓣：抛物线运动 + 拖尾 + 发光
           this.trail.push({x: this.x, y: this.y, life: this.life});
-          if (this.trail.length > 8) this.trail.shift();
+          if (this.trail.length > 6) this.trail.shift();
           this.x += this.vx;
           this.y += this.vy;
-          this.vy += 0.12; // 重力
-          this.vx *= 0.985; // 空气阻力
+          this.vy += 0.12;
+          this.vx *= 0.985;
           this.life -= this.decay;
           this.opacity = this.life;
           this.rotation += this.rotationSpeed * 1.5;
           return this.life > 0;
         } else {
-          this.y += this.speedY;
-          this.x += this.speedX + Math.sin(this.time) * 1.2;
-          this.rotation += this.rotationSpeed;
+          // 二阶弹簧阻尼物理：风力作用在加速度上，有动量和空气阻力
+          const windAccel = Math.sin(this.time) * this.windStrength;
+          this.vx += windAccel;          // 风力加速
+          this.vy += this.gravity;       // 重力加速
+          this.vx *= this.drag;          // 空气阻力
+          this.vy *= this.drag;
+          this.x += this.vx;             // 有动量的位移
+          this.y += this.vy;
+          this.rotation += this.rotationSpeed + this.vx * 0.01; // 横向速度影响旋转
           if (this.y > canvas.height + 20 || this.x < -20 || this.x > canvas.width + 20) {
             this.reset(false);
           }
@@ -3460,112 +3485,107 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
       }
     }
 
-    // 初始化飘落樱花
     for (let i = 0; i < PETAL_COUNT; i++) {
       petals.push(new Petal(false));
     }
 
-    // 鼠标跟随：留下樱花轨迹
+    // 鼠标跟随轨迹
     canvas.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
       const now = Date.now();
-      if (now - lastTrailTime > 50) { // 每50ms生成一片轨迹花瓣
+      if (now - lastTrailTime > 80) {
         lastTrailTime = now;
         const trail = new Petal(false, mouseX, mouseY);
-        trail.speedY = Math.random() * 0.5 + 0.2;
-        trail.speedX = (Math.random() - 0.5) * 0.5;
+        trail.vx = (Math.random() - 0.5) * 0.3;
+        trail.vy = Math.random() * 0.3 + 0.1;
+        trail.gravity = 0.01;
+        trail.windStrength = 0.02;
+        trail.drag = 0.97;
         trail.opacity = 0.6;
         trail.size = Math.random() * 5 + 3;
         trail.isTrail = true;
         trail.life = 1.0;
         trail.decay = 0.015;
         trailPetals.push(trail);
-        if (trailPetals.length > 30) trailPetals.shift();
+        if (trailPetals.length > 20) trailPetals.shift();
       }
     });
 
-    // 点击爆发樱花
+    // 点击爆发
     canvas.addEventListener('click', (e) => {
-      const burstCount = isMobile ? 8 : 15;
+      const burstCount = isMobile ? 8 : 12;
       for (let i = 0; i < burstCount; i++) {
         burstPetals.push(new Petal(true, e.clientX, e.clientY));
       }
     });
 
-    // 触摸支持（移动端）
     canvas.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
-      const burstCount = 8;
-      for (let i = 0; i < burstCount; i++) {
+      for (let i = 0; i < 8; i++) {
         burstPetals.push(new Petal(true, touch.clientX, touch.clientY));
       }
     });
 
-    function animate() {
+    function animate(now) {
+      // 限制30fps
+      if (now - lastFrameTime < FRAME_INTERVAL) {
+        animId = requestAnimationFrame(animate);
+        return;
+      }
+      lastFrameTime = now;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // 绘制飘落樱花
+
+      // 飘落樱花（用预渲染drawImage）
       petals.forEach(p => {
         p.update();
-        drawPetal(p);
+        drawPetalFast(p, false);
       });
-      
-      // 绘制鼠标轨迹花瓣（带微光）
+
+      // 鼠标轨迹花瓣（带发光预渲染）
       trailPetals = trailPetals.filter(p => {
         p.update();
         p.life -= p.decay;
         p.opacity = p.life * 0.8;
         if (p.life > 0) {
-          ctx.save();
-          ctx.shadowColor = 'rgba(255, 182, 193, 0.6)';
-          ctx.shadowBlur = p.size * 1.5;
-          drawPetal(p);
-          ctx.restore();
+          drawPetalFast(p, true);
           return true;
         }
         return false;
       });
-      
-      // 绘制点击爆发花瓣（带拖尾和发光）
+
+      // 点击爆发花瓣（拖尾+发光预渲染）
       burstPetals = burstPetals.filter(p => {
         const alive = p.update();
         if (alive) {
-          // 绘制拖尾
+          // 拖尾（简化：用低透明度drawImage画历史位置）
           if (p.trail && p.trail.length > 1) {
             ctx.save();
-            ctx.globalAlpha = p.opacity * 0.3;
-            ctx.strokeStyle = p.color.replace('ALPHA', '0.5');
-            ctx.lineWidth = p.size * 0.4;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(p.trail[0].x, p.trail[0].y);
-            for (let i = 1; i < p.trail.length; i++) {
-              ctx.lineTo(p.trail[i].x, p.trail[i].y);
+            ctx.globalAlpha = p.opacity * 0.2;
+            for (let i = 0; i < p.trail.length; i += 2) {
+              const t = p.trail[i];
+              const s = p.size * 1.2;
+              ctx.drawImage(prerenderedPetals[p.colorIndex], t.x - s/2, t.y - s/2, s, s);
             }
-            ctx.stroke();
             ctx.restore();
           }
-          // 发光效果
-          ctx.save();
-          ctx.shadowColor = p.color.replace('ALPHA', '0.8');
-          ctx.shadowBlur = p.size * 2 * p.glow * p.life;
-          drawPetal(p);
-          ctx.restore();
+          drawPetalFast(p, true);
         }
         return alive;
       });
-      
+
       animId = requestAnimationFrame(animate);
     }
-    animate();
+    animId = requestAnimationFrame(animate);
 
     // 页面不可见时暂停
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         if (animId) cancelAnimationFrame(animId);
       } else {
-        animate();
+        lastFrameTime = 0;
+        animId = requestAnimationFrame(animate);
       }
     });
   }
@@ -3615,11 +3635,6 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     });
   }
 
-  // ========== 卡片3D悬停效果（已禁用，节省性能） ==========
-  function initCard3D() {
-    return;
-  }
-
   // ========== 标题逐字渐入 ==========
   function initTitleReveal() {
     const titles = document.querySelectorAll('.hero-name, .section-title span:not(.title-decoration)');
@@ -3639,85 +3654,13 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     });
   }
 
-  // ========== 统计数字发光脉冲（已禁用，节省性能） ==========
-  function initStatGlow() {
-    return;
-  }
-
-  // ========== 鼠标星光拖尾（已禁用，节省性能） ==========
-  function initStarTrail() {
-    const canvas = document.getElementById('starTrailCanvas');
-    if (!canvas) return;
-    canvas.style.display = 'none';
-  }
-
-  // ========== 剑光划过效果（已禁用，节省性能） ==========
-  function initSwordSlash() {
-    return;
-  }
-
-  // ========== 点击空白处弹出emoji ==========
-  function initClickEmoji() {
-    const emojis = ['⚔️', '🌸', '✨', '🍃', '🗡️', '🏮', '🎋', '💮', '🎐', '☯️', '🔮', '🌙', '⭐', '🎆', '🀄'];
-    const interactiveTags = ['A', 'BUTTON', 'INPUT', 'TEXTAREA', 'SELECT', 'VIDEO', 'CANVAS', 'IMG'];
-
-    document.addEventListener('click', function(e) {
-      // 点击交互元素时不触发
-      if (interactiveTags.includes(e.target.tagName)) return;
-      // 点击导航栏、弹窗等也不触发
-      if (e.target.closest('.top-nav, .download-modal-overlay, .intro-overlay, .back-to-top')) return;
-
-      const count = Math.floor(Math.random() * 2) + 1; // 1-2个emoji
-      for (let i = 0; i < count; i++) {
-        createEmoji(e.clientX, e.clientY, emojis[Math.floor(Math.random() * emojis.length)]);
-      }
-    });
-
-    function createEmoji(x, y, emoji) {
-      const el = document.createElement('div');
-      el.textContent = emoji;
-      el.style.cssText = `
-        position: fixed; left: ${x}px; top: ${y}px;
-        font-size: ${20 + Math.random() * 16}px;
-        pointer-events: none; z-index: 9997;
-        transform: translate(-50%, -50%);
-        transition: none;
-        user-select: none;
-      `;
-      document.body.appendChild(el);
-
-      // 随机方向和距离
-      const angle = (Math.random() * 60 - 30) * Math.PI / 180 - Math.PI / 2; // 向上扇形
-      const distance = 80 + Math.random() * 100;
-      const dx = Math.cos(angle) * distance;
-      const dy = Math.sin(angle) * distance;
-      const rotation = (Math.random() - 0.5) * 720;
-      const duration = 1000 + Math.random() * 800;
-
-      // 强制重排后执行动画
-      el.offsetHeight;
-      el.style.transition = `all ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-      el.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) rotate(${rotation}deg) scale(0.3)`;
-      el.style.opacity = '0';
-
-      setTimeout(() => el.remove(), duration);
-    }
-  }
-
   document.addEventListener('DOMContentLoaded', () => {
     initPageLoad();
-    // initParticles(); // 已禁用，节省性能
     initSakura();
     initScrollReveal();
-    initMouseGlow();
     initScrollEffects();
     initRippleEffect();
-    initCard3D();
     initTitleReveal();
-    initStatGlow();
-    // initStarTrail(); // 已禁用，节省性能
-    initSwordSlash();
-    initClickEmoji();
     initNavTime();
     initWallpaper();
 
@@ -4002,5 +3945,36 @@ setTimeout(function() {
 }, 5000);
 </script>
 
+<script>
+// ===== 禁用F12和右键 =====
+(function() {
+  // 禁用右键
+  document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+  // 禁用F12
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12') { e.preventDefault(); return false; }
+    // Ctrl+Shift+I / J / C
+    if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) { e.preventDefault(); return false; }
+    // Ctrl+U 查看源码
+    if (e.ctrlKey && e.key.toUpperCase() === 'U') { e.preventDefault(); return false; }
+    // Ctrl+S 保存
+    if (e.ctrlKey && e.key.toUpperCase() === 'S') { e.preventDefault(); return false; }
+  });
+  // 检测开发者工具打开（简单检测）
+  let devtoolsOpen = false;
+  setInterval(function() {
+    const widthThreshold = window.outerWidth - window.innerWidth > 160;
+    const heightThreshold = window.outerHeight - window.innerHeight > 160;
+    if (widthThreshold || heightThreshold) {
+      if (!devtoolsOpen) {
+        devtoolsOpen = true;
+        // 可以在这里做处理，比如刷新页面
+      }
+    } else {
+      devtoolsOpen = false;
+    }
+  }, 1000);
+})();
+</script>
 </body>
 </html>
