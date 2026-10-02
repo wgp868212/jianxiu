@@ -1633,83 +1633,143 @@ body { background: var(--paper-base); }
   .profile-name { font-size: 24px; }
 }
 
-/* ===== 开场动画 ===== */
+/* ===== 开场动画（极简黑底白字，模仿 jiejoe.com） ===== */
 .intro-overlay {
   position: fixed; inset: 0; z-index: 9999;
-  background: linear-gradient(135deg, #f7f8fc 0%, #e8ecf8 50%, #f0e8f8 100%);
+  background: #0a0a0a;
   display: flex; align-items: center; justify-content: center;
-  transition: opacity 0.7s ease, visibility 0.7s;
+  transition: opacity 0.6s ease, visibility 0.6s;
+  overflow: hidden;
 }
 .intro-overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-.intro-content { display: flex; align-items: center; gap: 28px; }
-.intro-avatar {
-  width: 110px; height: 110px; border-radius: 50%;
-  border: 4px solid rgba(255,255,255,0.95);
-  box-shadow: 0 10px 40px rgba(90,176,255,0.25), 0 0 0 8px rgba(255,107,157,0.1);
-  transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
-  animation: avatarPop 0.6s ease;
-}
-@keyframes avatarPop {
-  0% { transform: scale(0); opacity: 0; }
-  60% { transform: scale(1.15); }
-  100% { transform: scale(1); opacity: 1; }
-}
-.intro-avatar.move-left { transform: translateX(-70px) scale(0.9); }
-.intro-text {
-  opacity: 0; transform: translateX(-30px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-  display: flex; align-items: center;
-}
-.intro-text.show { opacity: 1; transform: translateX(0); }
-.intro-name {
-  font-family: 'Noto Sans SC', sans-serif;
-  font-size: 48px; font-weight: 800; color: #3a3f5c;
-  letter-spacing: 3px;
-  background: linear-gradient(135deg, #3a3f5c, #ff6b9d);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.intro-cursor {
-  display: inline-block; width: 4px; height: 44px;
-  background: #ff6b9d; margin-left: 6px; border-radius: 2px;
-  animation: cursorBlink 0.7s infinite;
-}
-@keyframes cursorBlink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
-.intro-text.fade-out {
-  opacity: 0 !important;
-  transform: translateX(-30px) !important;
-}
-.intro-avatar.fade-out {
-  opacity: 0 !important;
-  transform: translateX(-70px) scale(0.8) !important;
-}
-.intro-brand {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%) scale(0.8);
-  font-size: 64px; font-weight: 300;
-  color: #3a3f5c;
-  letter-spacing: 16px;
-  opacity: 0;
-  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  font-family: 'Noto Sans SC', sans-serif;
+
+.intro-stage {
   text-align: center;
-  text-shadow: 0 2px 20px rgba(255,107,157,0.2);
+  position: relative;
 }
-.intro-brand.show {
+
+.intro-word-wrap {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+.intro-word {
+  font-family: 'Poppins', 'Noto Sans SC', sans-serif;
+  font-size: clamp(36px, 8vw, 96px);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 2px;
+  line-height: 1.1;
+  text-transform: none;
+  position: relative;
+  display: inline-block;
+  min-height: 1.1em;
+}
+
+/* 故障效果：彩色偏移 */
+.intro-word.glitch::before,
+.intro-word.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+.intro-word.glitch::before {
+  color: #ff6b9d;
+  animation: glitchShift1 0.3s steps(2) infinite;
+  clip-path: inset(0 0 60% 0);
+}
+.intro-word.glitch::after {
+  color: #5ab0ff;
+  animation: glitchShift2 0.3s steps(2) infinite;
+  clip-path: inset(60% 0 0 0);
+}
+@keyframes glitchShift1 {
+  0% { transform: translate(0); }
+  20% { transform: translate(-3px, 1px); }
+  40% { transform: translate(3px, -1px); }
+  60% { transform: translate(-2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+@keyframes glitchShift2 {
+  0% { transform: translate(0); }
+  20% { transform: translate(3px, -1px); }
+  40% { transform: translate(-3px, 1px); }
+  60% { transform: translate(2px, -2px); }
+  80% { transform: translate(-2px, 2px); }
+  100% { transform: translate(0); }
+}
+
+/* 打字机光标 */
+.intro-word-cursor {
+  display: inline-block;
+  width: 4px;
+  height: clamp(32px, 7vw, 80px);
+  background: #fff;
+  margin-left: 6px;
+  animation: cursorBlink 0.7s steps(1) infinite;
+  align-self: flex-end;
+  margin-bottom: 8px;
+}
+@keyframes cursorBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* 文字进入/退出动画 */
+.intro-word.word-enter {
+  animation: wordEnter 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+}
+@keyframes wordEnter {
+  0% { opacity: 0; transform: translateY(20px) scale(0.95); filter: blur(4px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* 底部小字提示 */
+.intro-sub {
+  font-family: 'Poppins', 'Noto Sans SC', sans-serif;
+  font-size: clamp(11px, 1.5vw, 15px);
+  font-weight: 400;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 3px;
+  margin-top: 32px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.intro-sub.show {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translateY(0);
 }
-.intro-brand::after {
+
+/* 背景扫描线（增加质感） */
+.intro-overlay::before {
   content: '';
-  display: block;
-  width: 40px; height: 2px;
-  background: linear-gradient(90deg, #ff6b9d, #5ab0ff);
-  margin: 16px auto 0;
-  border-radius: 2px;
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.015) 2px,
+    rgba(255,255,255,0.015) 4px
+  );
+  pointer-events: none;
 }
-@media (max-width: 768px) {
-  .intro-brand { font-size: 32px; letter-spacing: 6px; }
+
+/* 四角装饰 */
+.intro-overlay::after {
+  content: 'JIANXIU.ICU';
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Poppins', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.15);
 }
 
 /* ===== 站点统计 ===== */
@@ -1753,9 +1813,6 @@ body { background: var(--paper-base); }
 }
 
 @media (max-width: 768px) {
-  .intro-name { font-size: 32px; }
-  .intro-avatar { width: 80px; height: 80px; }
-  .intro-content { gap: 16px; }
   .site-stats { padding: 16px; gap: 8px; }
   .stat-item { padding: 0 10px; flex-direction: column; gap: 2px; }
   .stat-divider { display: none; }
@@ -2154,15 +2211,15 @@ button, .btn, .nav-login-btn, .submit-btn {
 <div class="liquid-orb gold"></div>
 
 
-<!-- 开场动画 -->
+<!-- 开场动画（极简文字风格，模仿 jiejoe.com） -->
 <div class="intro-overlay" id="introOverlay">
-  <div class="intro-content">
-    <img src="images/avatar.jpg" alt="剑修哥" class="intro-avatar" id="introAvatar">
-    <div class="intro-text" id="introText">
-      <span class="intro-name">JianXiu_</span><span class="intro-cursor"></span>
+  <div class="intro-stage">
+    <div class="intro-word-wrap">
+      <span class="intro-word" id="introWord"></span>
+      <span class="intro-word-cursor"></span>
     </div>
+    <div class="intro-sub" id="introSub">Scroll carefully, it's smooth · 小心地滑</div>
   </div>
-  <div class="intro-brand" id="introBrand">剑修哥出品</div>
 </div>
 
 <!-- 壁纸背景层 -->
@@ -2944,60 +3001,81 @@ function showLoginToast(msg) {
 document.addEventListener('DOMContentLoaded', updateNavAuth);
 
 
-// ===== 开场动画（JianXiu_打字机效果） =====
+// ===== 开场动画（极简文字：LOADING → be wild! → creative! → and cool!） =====
 (function() {
   const overlay = document.getElementById('introOverlay');
   if (!overlay) return;
-  const avatar = document.getElementById('introAvatar');
-  const text = document.getElementById('introText');
-  const nameEl = document.querySelector('.intro-name');
-  
+  const wordEl = document.getElementById('introWord');
+  const subEl = document.getElementById('introSub');
+
+  const words = ['LOADING', 'be wild!', 'creative!', 'and cool!'];
   let introDone = false;
+
   function hideOverlay() {
     if (introDone) return;
     introDone = true;
     overlay.classList.add('hide');
     setTimeout(function() { overlay.style.display = 'none'; }, 700);
   }
-  
-  // 安全兜底：5秒后强制隐藏，防止卡住
-  setTimeout(hideOverlay, 5000);
-  // 点击跳过动画
+
+  // 安全兜底：6秒后强制隐藏
+  setTimeout(hideOverlay, 6000);
+  // 点击跳过
   overlay.addEventListener('click', hideOverlay);
-  
-  function startIntro() {
-    const brand = document.getElementById('introBrand');
-    // 头像左移
-    setTimeout(function() { if (avatar) avatar.classList.add('move-left'); }, 600);
-    // 文字区域显示
-    setTimeout(function() { if (text) text.classList.add('show'); }, 1000);
-    
-    // JianXiu_ 打字机效果
-    const fullText = 'JianXiu_';
-    let charIdx = 0;
-    if (nameEl) {
-      nameEl.textContent = '';
-      function typeName() {
-        if (introDone) return;
-        if (charIdx < fullText.length) {
-          nameEl.textContent = fullText.substring(0, charIdx + 1);
-          charIdx++;
-          setTimeout(typeName, 100);
-        } else {
-          setTimeout(function() {
-            if (text) text.classList.add('fade-out');
-            if (avatar) avatar.classList.add('fade-out');
-          }, 600);
-          setTimeout(function() { if (brand) brand.classList.add('show'); }, 900);
-          setTimeout(hideOverlay, 3500);
+
+  // 打字机打出一个词
+  function typeWord(text, callback) {
+    if (introDone) return;
+    wordEl.textContent = '';
+    wordEl.setAttribute('data-text', '');
+    wordEl.classList.remove('glitch');
+    wordEl.classList.add('word-enter');
+    setTimeout(function() { wordEl.classList.remove('word-enter'); }, 250);
+
+    let i = 0;
+    function type() {
+      if (introDone) return;
+      if (i < text.length) {
+        wordEl.textContent = text.substring(0, i + 1);
+        wordEl.setAttribute('data-text', text.substring(0, i + 1));
+        // 打字过程中随机触发故障
+        if (Math.random() < 0.15) {
+          wordEl.classList.add('glitch');
+          setTimeout(function() { wordEl.classList.remove('glitch'); }, 120);
         }
+        i++;
+        setTimeout(type, 55 + Math.random() * 40); // 不均匀的打字速度
+      } else {
+        // 打完后完整词带故障闪一下
+        wordEl.classList.add('glitch');
+        setTimeout(function() { wordEl.classList.remove('glitch'); }, 200);
+        if (callback) setTimeout(callback, 350);
       }
-      setTimeout(typeName, 1100);
+    }
+    type();
+  }
+
+  // 依次播放四个词
+  function playSequence(idx) {
+    if (introDone) return;
+    if (idx < words.length) {
+      typeWord(words[idx], function() {
+        playSequence(idx + 1);
+      });
     } else {
-      // 没有nameEl时直接走原流程
-      setTimeout(hideOverlay, 3500);
+      // 所有词打完，显示小字提示
+      if (subEl) subEl.classList.add('show');
+      // 停顿后淡出
+      setTimeout(hideOverlay, 1400);
     }
   }
+
+  function startIntro() {
+    if (introDone) return;
+    // 短暂延迟后开始
+    setTimeout(function() { playSequence(0); }, 300);
+  }
+
   if (document.readyState === 'complete') startIntro();
   else if (document.readyState === 'interactive') setTimeout(startIntro, 100);
   else window.addEventListener('DOMContentLoaded', startIntro);
