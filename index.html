@@ -1775,6 +1775,20 @@ body { background: var(--paper-base); }
 }
 .intro-triangle svg { width: 100%; height: auto; }
 
+/* 三角形小球动画 */
+.tri-dot {
+  animation: dotFloat 3s ease-in-out infinite;
+}
+.dot1 { animation-delay: 0s; }
+.dot2 { animation-delay: 0.3s; }
+.dot3 { animation-delay: 0.6s; }
+.dot4 { animation-delay: 0.9s; }
+.dot5 { animation-delay: 1.2s; }
+@keyframes dotFloat {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(-8px); opacity: 0.7; }
+}
+
 /* 底部 */
 .intro-bottom {
   position: absolute;
@@ -1784,7 +1798,7 @@ body { background: var(--paper-base); }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   z-index: 2;
   opacity: 0;
   animation: bottomIn 0.6s ease 0.7s forwards;
@@ -1793,15 +1807,37 @@ body { background: var(--paper-base); }
   from { opacity: 0; transform: translateX(-50%) translateY(20px); }
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
-.intro-clapper {
-  width: 32px; height: 40px;
-  animation: clapperBounce 2s ease-in-out infinite;
+
+/* 告示牌 */
+.intro-sign {
+  width: 44px; height: 52px;
+  margin-bottom: 4px;
+  transform-origin: bottom center;
+  animation: signSwing 4s ease-in-out infinite;
 }
-@keyframes clapperBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+@keyframes signSwing {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-12deg); }
+  40% { transform: rotate(10deg); }
+  60% { transform: rotate(-6deg); }
+  80% { transform: rotate(4deg); }
 }
-.intro-clapper svg { width: 100%; height: 100%; }
+.intro-sign svg { width: 100%; height: 100%; }
+
+/* 点击进入提示 */
+.intro-click-hint {
+  font-family: 'Poppins', 'Noto Sans SC', sans-serif;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 8px;
+  animation: hintBlink 1.5s ease-in-out infinite;
+}
+@keyframes hintBlink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.9; }
+}
+
 .intro-scroll-text {
   font-family: 'Poppins', monospace;
   font-size: 11px;
@@ -1818,12 +1854,22 @@ body { background: var(--paper-base); }
 
 /* 响应式 */
 @media (max-width: 768px) {
-  .intro-main { gap: 3vw; padding: 0 5vw; }
+  .intro-main { gap: 0; padding: 0 4vw; justify-content: center; }
   .intro-badge { display: none; }
-  .intro-triangle { width: 70px; }
-  .intro-line { font-size: clamp(32px, 11vw, 70px); }
-  .line2 { margin-left: 4vw; }
-  .line3 { margin-left: 8vw; }
+  .intro-triangle { display: none; }
+  .intro-bigwords { align-items: center; }
+  .intro-line {
+    font-size: clamp(28px, 10vw, 56px);
+    text-align: center;
+  }
+  .line2 { margin-left: 0; }
+  .line3 { margin-left: 0; }
+  .outline-word { -webkit-text-stroke: 1.5px #ff6b9d; }
+  .intro-bottom { bottom: 4vh; gap: 4px; }
+  .intro-sign { width: 36px; height: 42px; }
+  .intro-click-hint { font-size: 10px; letter-spacing: 3px; margin-bottom: 6px; }
+  .intro-scroll-text { font-size: 9px; letter-spacing: 2px; }
+  .intro-scroll-cn { font-size: 10px; letter-spacing: 3px; }
 }
 
 /* ===== 站点统计 ===== */
@@ -2308,26 +2354,29 @@ button, .btn, .nav-login-btn, .submit-btn {
         <path d="M100 10 L145 220" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
         <path d="M55 115 L145 115" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
         <path d="M77 167 L123 167" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-        <circle cx="145" cy="40" r="5" fill="#ff6b00"/>
-        <circle cx="120" cy="80" r="4" fill="#ff00ff"/>
-        <circle cx="155" cy="95" r="4" fill="#0066ff"/>
-        <circle cx="60" cy="180" r="5" fill="#ff0000"/>
-        <circle cx="170" cy="210" r="4" fill="#ffff00"/>
+        <circle class="tri-dot dot1" cx="145" cy="40" r="5" fill="#ff6b00"/>
+        <circle class="tri-dot dot2" cx="120" cy="80" r="4" fill="#ff00ff"/>
+        <circle class="tri-dot dot3" cx="155" cy="95" r="4" fill="#0066ff"/>
+        <circle class="tri-dot dot4" cx="60" cy="180" r="5" fill="#ff0000"/>
+        <circle class="tri-dot dot5" cx="170" cy="210" r="4" fill="#ffff00"/>
       </svg>
     </div>
   </div>
 
-  <!-- 底部：场记板 + 小心地滑 -->
+  <!-- 底部：告示牌 + 小心地滑 -->
   <div class="intro-bottom" id="introBottom">
-    <div class="intro-clapper">
-      <svg viewBox="0 0 40 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="4" y="18" width="32" height="28" rx="2" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
-        <path d="M4 18 L36 18" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
-        <path d="M8 18 L12 6 L20 6 L16 18" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
-        <path d="M20 6 L28 6 L24 18 L16 18" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
-        <path d="M28 6 L36 6 L32 18 L24 18" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+    <div class="intro-sign" id="introSign">
+      <svg viewBox="0 0 60 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- 告示牌杆子 -->
+        <rect x="27" y="45" width="6" height="22" rx="1" fill="rgba(255,255,255,0.4)"/>
+        <!-- 告示牌主体（黄色警告牌） -->
+        <path d="M30 5 L55 42 L5 42 Z" fill="#ffcc00" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+        <!-- 感叹号 -->
+        <rect x="27.5" y="18" width="5" height="14" rx="1" fill="#1a1a1a"/>
+        <circle cx="30" cy="37" r="3" fill="#1a1a1a"/>
       </svg>
     </div>
+    <div class="intro-click-hint" id="introClickHint">点 击 任 意 处 进 入</div>
     <div class="intro-scroll-text">SCROLL CAREFULLY, IT'S SMOOTH</div>
     <div class="intro-scroll-cn">小 · 心 · 地 · 滑</div>
   </div>
@@ -3112,7 +3161,7 @@ function showLoginToast(msg) {
 document.addEventListener('DOMContentLoaded', updateNavAuth);
 
 
-// ===== 开场动画（jiejoe 风格：CSS 动画驱动，JS 只负责淡出） =====
+// ===== 开场动画（jiejoe 风格：点击才进入） =====
 (function() {
   const overlay = document.getElementById('introOverlay');
   if (!overlay) return;
@@ -3125,13 +3174,12 @@ document.addEventListener('DOMContentLoaded', updateNavAuth);
     setTimeout(function() { overlay.style.display = 'none'; }, 700);
   }
 
-  // 动画全部播完后停顿 1.5 秒淡出
-  // CSS 动画时间线：line1 0.1s, line2 0.25s, line3 0.4s, triangle 0.5s, bottom 0.7s
-  // 全部完成约 1.3s，再展示 1.5s，总共约 2.8s 开始淡出
-  setTimeout(hideOverlay, 2800);
-
-  // 点击跳过
+  // 点击任意处进入
   overlay.addEventListener('click', hideOverlay);
+  // 按任意键也可以进入
+  document.addEventListener('keydown', function(e) {
+    if (!introDone) hideOverlay();
+  });
 })();
 
 // ===== 背景时间 =====
